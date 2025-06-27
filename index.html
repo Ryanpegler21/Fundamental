@@ -1,0 +1,1430 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamental - AI-Powered Investment Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #FFD700;
+            --dark-bg: #0B1D40;          /* Navy blue background */
+            --darker-bg: #081830;        /* Slightly darker navy for contrast */
+            --card-bg: #0D223F;          /* Slightly lighter navy for card contrast */
+
+            --text-primary: #FFFFFF;     /* White text */
+            --text-secondary: #DDDDDD;
+            --text-muted: #AAAAAA;
+
+            --border-color: var(--primary-gold);  /* Gold outlines */
+            --shadow-dark: 0 8px 32px rgba(255, 215, 0, 0.1);
+            --shadow-gold: 0 4px 20px rgba(255, 215, 0, 0.3);
+
+            --gradient-primary: linear-gradient(135deg, var(--primary-gold) 0%, #fff 100%);
+            --gradient-bg: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg); /* solid navy */
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-gold);
+        }
+
+        .hero {
+            padding: 120px 2rem 80px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 3rem;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-gold);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--primary-gold);
+        }
+
+        .market-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .market-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .market-symbol {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-gold);
+        }
+
+        .market-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+        }
+
+        .market-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .market-change.positive {
+            color: var(--accent-green);
+        }
+
+        .market-change.negative {
+            color: var(--accent-red);
+        }
+
+        .portfolio-form {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .risk-slider {
+            width: 100%;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .risk-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .risk-display {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .sector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .sector-btn {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .sector-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        .sector-btn.selected {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            border-color: var(--primary-gold);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--dark-bg);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-gold);
+            border: 2px solid var(--primary-gold);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+        }
+
+        .portfolio-result {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            margin-top: 2rem;
+        }
+
+        .allocation-chart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .allocation-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .allocation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .allocation-sector {
+            font-weight: 700;
+            color: var(--primary-gold);
+        }
+
+        .allocation-amount {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .allocation-percentage {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .allocation-stocks {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: width 1s ease;
+        }
+
+        .ai-analysis {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--primary-gold);
+            margin: 2rem 0;
+        }
+
+        .ai-analysis-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .ai-icon {
+            font-size: 1.5rem;
+            color: var(--primary-gold);
+            margin-right: 1rem;
+        }
+
+        .ai-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+        }
+
+        .sentiment-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .sentiment-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .sentiment-score {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .sentiment-score.bullish {
+            color: var(--accent-green);
+        }
+
+        .sentiment-score.bearish {
+            color: var(--accent-red);
+        }
+
+        .sentiment-score.neutral {
+            color: var(--primary-gold);
+        }
+
+        .news-feed {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            margin: 2rem 0;
+        }
+
+        .news-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease;
+        }
+
+        .news-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .news-summary {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .chatbot-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .chatbot-trigger {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50%;
+            color: var(--dark-bg);
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-gold);
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-trigger:hover {
+            transform: scale(1.1);
+        }
+
+        .chatbot-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 400px;
+            height: 500px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chatbot-header {
+            background: var(--gradient-primary);
+            color: var(--dark-bg);
+            padding: 1rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            margin-left: auto;
+        }
+
+        .message.ai {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            margin-right: 0.5rem;
+        }
+
+        .chatbot-input button {
+            padding: 0.8rem 1rem;
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .performance-chart {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            margin: 2rem 0;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+        }
+
+        .risk-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .rebalancing-suggestions {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            margin: 2rem 0;
+        }
+
+        .suggestion-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-gold);
+        }
+
+        .suggestion-action {
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .suggestion-reason {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .market-insights {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            margin: 2rem 0;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .insight-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--primary-gold);
+        }
+
+        .insight-content {
+            flex: 1;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .backtesting-results {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            margin: 2rem 0;
+        }
+
+        .backtest-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .backtest-metric {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .backtest-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+        }
+
+        .backtest-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .export-options {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-dark);
+            margin: 2rem 0;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .footer {
+            background: var(--darker-bg);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-gold);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .chatbot-window {
+                width: 90vw;
+                right: 5vw;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Apply gold outlines to components */
+        .card,
+        .form-input,
+        .form-select,
+        .sector-btn,
+        .news-item,
+        .market-item,
+        .metric-card,
+        .suggestion-item,
+        .modal-content,
+        .chatbot-window {
+            border: 1px solid var(--primary-gold);
+        }
+
+        /* Button styling with gold outlines */
+        .btn-primary,
+        .btn-secondary {
+            border: 2px solid var(--primary-gold);
+        }
+
+        /* Button color updates */
+        .btn-primary {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-gold);
+            border: 2px solid var(--primary-gold);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Fundamental</div>
+            <ul class="nav-links">
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#analysis">Analysis</a></li>
+                <li><a href="#markets">Markets</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">AI-Powered Investment Intelligence</h1>
+            <p class="hero-subtitle">Make smarter investment decisions with real-time market data, advanced AI analysis, and personalized portfolio management</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalUsers">10,000+</span>
+                    <span class="stat-label">Active Users</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="totalAssets">$2.5B</span>
+                    <span class="stat-label">Assets Managed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="avgReturn">12.3%</span>
+                    <span class="stat-label">Avg Annual Return</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <section class="section" id="dashboard">
+            <h2 class="section-title">Market Dashboard</h2>
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Live Market Data</h3>
+                        <i class="fas fa-chart-line card-icon"></i>
+                    </div>
+                    <div class="market-data" id="marketData">
+                        <!-- Market data will be populated here -->
+                    </div>
+                    <div class="market-insights">
+                        <h4 style="color: var(--primary-gold); margin-bottom: 1rem;">Market Insights</h4>
+                        <div id="marketInsights">
+                            <!-- AI-generated market insights -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Market Sentiment</h3>
+                        <i class="fas fa-brain card-icon"></i>
+                    </div>
+                    <div class="sentiment-indicator">
+                        <div class="sentiment-item">
+                            <div class="sentiment-score bullish" id="bullishSentiment">72%</div>
+                            <div class="sentiment-label">Bullish</div>
+                        </div>
+                        <div class="sentiment-item">
+                            <div class="sentiment-score neutral" id="neutralSentiment">18%</div>
+                            <div class="sentiment-label">Neutral</div>
+                        </div>
+                        <div class="sentiment-item">
+                            <div class="sentiment-score bearish" id="bearishSentiment">10%</div>
+                            <div class="sentiment-label">Bearish</div>
+                        </div>
+                    </div>
+                    <div class="ai-analysis">
+                        <div class="ai-analysis-header">
+                            <i class="fas fa-robot ai-icon"></i>
+                            <h4 class="ai-title">AI Market Analysis</h4>
+                        </div>
+                        <p id="aiMarketAnalysis">Analyzing current market conditions and sentiment...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="news-feed">
+                <div class="card-header">
+                    <h3 class="card-title">Financial News & Analysis</h3>
+                    <i class="fas fa-newspaper card-icon"></i>
+                </div>
+                <div id="newsFeed">
+                    <!-- News items will be populated here -->
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="portfolio">
+            <h2 class="section-title">Portfolio Builder</h2>
+            <div class="portfolio-form">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('basic')">Basic Setup</button>
+                    <button class="tab" onclick="switchTab('advanced')">Advanced Options</button>
+                    <button class="tab" onclick="switchTab('ai-recommendations')">AI Recommendations</button>
+                </div>
+
+                <div class="tab-content active" id="basic">
+                    <div class="form-group">
+                        <label class="form-label">Investment Amount (USD)</label>
+                        <input type="number" class="form-input" id="investmentAmount" min="1000" placeholder="Enter amount (minimum $1,000)" value="10000">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Investment Goals</label>
+                        <select class="form-select" id="investmentGoals">
+                            <option value="growth">Growth - Maximize returns</option>
+                            <option value="income">Income - Generate dividends</option>
+                            <option value="balanced">Balanced - Growth and income</option>
+                            <option value="conservative">Conservative - Capital preservation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Risk Tolerance</label>
+                        <input type="range" class="risk-slider" id="riskTolerance" min="1" max="10" value="5">
+                        <div class="risk-display" id="riskDisplay">Moderate Risk (5/10)</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Time Horizon</label>
+                        <select class="form-select" id="timeHorizon">
+                            <option value="short">Short-term (1-3 years)</option>
+                            <option value="medium">Medium-term (3-7 years)</option>
+                            <option value="long">Long-term (7+ years)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Preferred Sectors</label>
+                        <div class="sector-grid" id="sectorGrid">
+                            <button type="button" class="sector-btn" data-sector="technology">Technology</button>
+                            <button type="button" class="sector-btn" data-sector="healthcare">Healthcare</button>
+                            <button type="button" class="sector-btn" data-sector="finance">Finance</button>
+                            <button type="button" class="sector-btn" data-sector="energy">Energy</button>
+                            <button type="button" class="sector-btn" data-sector="consumer">Consumer Goods</button>
+                            <button type="button" class="sector-btn" data-sector="utilities">Utilities</button>
+                            <button type="button" class="sector-btn" data-sector="materials">Materials</button>
+                            <button type="button" class="sector-btn" data-sector="realestate">Real Estate</button>
+                            <button type="button" class="sector-btn" data-sector="crypto">Cryptocurrency</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="advanced">
+                    <div class="form-group">
+                        <label class="form-label">Market Sentiment Override</label>
+                        <select class="form-select" id="marketSentimentOverride">
+                            <option value="auto">Auto-detect from AI analysis</option>
+                            <option value="bullish">Bullish - Expecting growth</option>
+                            <option value="bearish">Bearish - Expecting decline</option>
+                            <option value="neutral">Neutral - Uncertain outlook</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Rebalancing Frequency</label>
+                        <select class="form-select" id="rebalancingFreq">
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                            <option value="annually">Annually</option>
+                            <option value="manual">Manual only</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">ESG Preferences</label>
+                        <select class="form-select" id="esgPreferences">
+                            <option value="none">No preference</option>
+                            <option value="moderate">Moderate ESG focus</option>
+                            <option value="high">High ESG focus</option>
+                            <option value="exclusion">Exclude controversial sectors</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">International Exposure</label>
+                        <input type="range" class="risk-slider" id="internationalExposure" min="0" max="50" value="20">
+                        <div class="risk-display" id="internationalDisplay">20% International</div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="ai-recommendations">
+                    <div class="ai-analysis">
+                        <div class="ai-analysis-header">
+                            <i class="fas fa-robot ai-icon"></i>
+                            <h4 class="ai-title">AI Portfolio Recommendations</h4>
+                        </div>
+                        <p id="aiRecommendations">Click "Generate AI Recommendations" to get personalized suggestions based on current market conditions and your profile.</p>
+                        <button class="btn-secondary" onclick="generateAIRecommendations()">Generate AI Recommendations</button>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="generatePortfolio()" id="generatePortfolioBtn">
+                    <i class="fas fa-magic"></i> Generate Optimized Portfolio
+                </button>
+            </div>
+
+            <div class="portfolio-result hidden" id="portfolioResult">
+                <h3 class="card-title">Your Optimized Portfolio</h3>
+                <div class="allocation-chart" id="allocationChart">
+                    <!-- Portfolio allocations will be displayed here -->
+                </div>
+                
+                <div class="risk-metrics" id="riskMetrics">
+                    <!-- Risk metrics will be displayed here -->
+                </div>
+
+                <div class="ai-analysis">
+                    <div class="ai-analysis-header">
+                        <i class="fas fa-robot ai-icon"></i>
+                        <h4 class="ai-title">AI Portfolio Analysis</h4>
+                    </div>
+                    <p id="aiPortfolioAnalysis">Analyzing your portfolio composition and risk profile...</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="analysis">
+            <h2 class="section-title">Advanced Analysis</h2>
+            
+            <div class="performance-chart">
+                <div class="card-header">
+                    <h3 class="card-title">Portfolio Performance Projection</h3>
+                    <i class="fas fa-chart-area card-icon"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                <div class="export-options">
+                    <h4 style="color: var(--primary-gold); margin-bottom: 1rem;">Export Options</h4>
+                    <div class="export-buttons">
+                        <button class="btn-secondary" onclick="exportToPDF()">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </button>
+                        <button class="btn-secondary" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
+                        <button class="btn-secondary" onclick="exportToCSV()">
+                            <i class="fas fa-file-csv"></i> Export to CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="backtesting-results">
+                <div class="card-header">
+                    <h3 class="card-title">Backtesting Results</h3>
+                    <i class="fas fa-history card-icon"></i>
+                </div>
+                <div class="backtest-summary" id="backtestSummary">
+                    <!-- Backtesting results will be displayed here -->
+                </div>
+                <button class="btn-secondary" onclick="runBacktest()">
+                    <i class="fas fa-play"></i> Run Historical Backtest
+                </button>
+            </div>
+
+            <div class="rebalancing-suggestions">
+                <div class="card-header">
+                    <h3 class="card-title">Rebalancing Suggestions</h3>
+                    <i class="fas fa-balance-scale card-icon"></i>
+                </div>
+                <div id="rebalancingSuggestions">
+                    <!-- Rebalancing suggestions will be displayed here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="chatbot-container">
+        <button class="chatbot-trigger" onclick="toggleChatbot()">
+            <i class="fas fa-comments"></i>
+        </button>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <span>AI Investment Advisor</span>
+                <button class="modal-close" onclick="toggleChatbot()">&times;</button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message ai">
+                    <p>Hello! I'm your AI investment advisor. I can help you with portfolio analysis, market insights, and investment strategies. What would you like to know?</p>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatInput" placeholder="Ask about investments, markets, or your portfolio...">
+                <button onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function loadMarketData() {
+      const apiKey = '0WGVLGKNHEXL3CBU'; // Replace with your valid API key
+      const symbols = ['AAPL', 'GOOGL', 'MSFT', 'TSLA'];
+
+      const container = document.getElementById('marketData');
+      container.innerHTML = 'Loading data...';
+
+      let html = '';
+
+      for (let symbol of symbols) {
+        try {
+          const res = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${aapl}&apikey=${googl}`);
+          const data = await res.json();
+          const quote = data['Global Quote'];
+
+          const price = parseFloat(quote['05. price']);
+          const change = parseFloat(quote['09. change']);
+          const percent = quote['10. change percent'];
+
+          html += `
+            <div class="data-card">
+              <h3>${symbol}</h3>
+              <p>$${price.toFixed(2)}</p>
+              <p style="color:${change >= 0 ? 'limegreen' : 'red'};">
+                ${change >= 0 ? '↑' : '↓'} ${change.toFixed(2)} (${percent})
+              </p>
+            </div>
+          `;
+        } catch (err) {
+          html += `<div class="data-card"><h3>${symbol}</h3><p>⚠️ Error loading</p></div>`;
+        }
+      }
+
+      container.innerHTML = html;
+    }
+
+    window.onload = loadMarketData;
+    </script>
+
+
+    <div class="modal" id="portfolioModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Portfolio Details</h3>
+                <button class="modal-close" onclick="closeModal('portfolioModal')">&times;</button>
+            </div>
+            <div id="portfolioModalContent">
+                <!-- Detailed portfolio information will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Fundamental</h3>
+                    <p>AI-powered investment platform providing intelligent portfolio management and market analysis.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Features</h3>
+                    <a href="#portfolio">Portfolio Builder</a>
+                    <a href="#analysis">Market Analysis</a>
+                    <a href="#dashboard">Live Data</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <a href="#education">Investment Education</a>
+                    <a href="#research">Market Research</a>
+                    <a href="#tools">Financial Tools</a>
+                </div>
+            </div>
+            <p>&copy; 2024 Fundamental. All rights reserved. | Investment advice powered by AI</p>
+        </div>
+    </footer>
+
+    <div id="marketData"></div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
