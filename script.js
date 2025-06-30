@@ -1,4 +1,3 @@
-
 // Fundamental AI Investment Platform - Advanced JavaScript Implementation
 
 class FundamentalPlatform {
@@ -18,17 +17,25 @@ class FundamentalPlatform {
 
     async init() {
         this.setupEventListeners();
-        await this.loadMarketData();
         this.generateMarketInsights();
         this.loadFinancialNews();
         this.updateSentimentAnalysis();
         this.hideLoadingScreen();
+        
+        // Add welcome message
+        setTimeout(() => {
+            this.showNotification('Welcome to Fundamental AI Investment Platform! 🚀');
+        }, 1000);
+
+        // Initialize charts and data
+        setTimeout(() => {
+            this.createPerformanceChart();
+            this.generateRebalancingSuggestions();
+        }, 2000);
     }
 
     hideLoadingScreen() {
-        setTimeout(() => {
-            document.getElementById('loadingScreen').classList.add('hidden');
-        }, 2000);
+        // Loading screen removed - no longer needed
     }
 
     setupEventListeners() {
@@ -52,11 +59,12 @@ class FundamentalPlatform {
         });
 
         // Chat input
-        document.getElementById('chatInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.sendMessage();
-            }
-        });
+        //Remove Chat Input
+        // document.getElementById('chatInput').addEventListener('keypress', (e) => {
+        //     if (e.key === 'Enter') {
+        //         this.sendMessage();
+        //     }
+        // });
 
         // Form inputs
         document.getElementById('investmentAmount').addEventListener('input', this.validateInput);
@@ -80,7 +88,7 @@ class FundamentalPlatform {
     toggleSector(button) {
         const sector = button.dataset.sector;
         button.classList.toggle('selected');
-        
+
         if (this.selectedSectors.has(sector)) {
             this.selectedSectors.delete(sector);
         } else {
@@ -98,23 +106,7 @@ class FundamentalPlatform {
     }
 
     async loadMarketData() {
-        const symbols = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'NVDA', 'JPM', 'JNJ', 'V', 'PG'];
-        const marketDataContainer = document.getElementById('marketData');
-        
-        // Simulate real-time data (in production, use actual API)
-        const mockData = this.generateMockMarketData(symbols);
-        
-        marketDataContainer.innerHTML = '';
-        
-        mockData.forEach(stock => {
-            const stockElement = this.createMarketItem(stock);
-            marketDataContainer.appendChild(stockElement);
-        });
-
-        // Update data every 30 seconds
-        setInterval(() => {
-            this.updateMarketData();
-        }, 30000);
+        // Removed live market data - keeping portfolio builder focus
     }
 
     generateMockMarketData(symbols) {
@@ -122,7 +114,7 @@ class FundamentalPlatform {
             const basePrice = Math.random() * 300 + 50;
             const change = (Math.random() - 0.5) * 10;
             const changePercent = (change / basePrice) * 100;
-            
+
             return {
                 symbol,
                 price: basePrice.toFixed(2),
@@ -138,11 +130,11 @@ class FundamentalPlatform {
     createMarketItem(stock) {
         const item = document.createElement('div');
         item.className = 'market-item';
-        
+
         const isPositive = parseFloat(stock.change) >= 0;
         const changeClass = isPositive ? 'positive' : 'negative';
         const changeIcon = isPositive ? '↗' : '↘';
-        
+
         item.innerHTML = `
             <div class="market-symbol">${stock.symbol}</div>
             <div class="market-price">$${stock.price}</div>
@@ -150,7 +142,7 @@ class FundamentalPlatform {
                 ${changeIcon} ${stock.change} (${stock.changePercent}%)
             </div>
         `;
-        
+
         return item;
     }
 
@@ -159,19 +151,19 @@ class FundamentalPlatform {
         items.forEach(item => {
             const priceElement = item.querySelector('.market-price');
             const changeElement = item.querySelector('.market-change');
-            
+
             // Simulate price changes
             const currentPrice = parseFloat(priceElement.textContent.replace('$', ''));
             const priceChange = (Math.random() - 0.5) * 2;
             const newPrice = Math.max(0, currentPrice + priceChange);
             const changePercent = (priceChange / currentPrice) * 100;
-            
+
             priceElement.textContent = `$${newPrice.toFixed(2)}`;
-            
+
             const isPositive = priceChange >= 0;
             const changeClass = isPositive ? 'positive' : 'negative';
             const changeIcon = isPositive ? '↗' : '↘';
-            
+
             changeElement.className = `market-change ${changeClass}`;
             changeElement.innerHTML = `${changeIcon} ${priceChange.toFixed(2)} (${changePercent.toFixed(2)}%)`;
         });
@@ -298,7 +290,7 @@ class FundamentalPlatform {
             `AI analysis indicates ${sentiments.bearish > 30 ? 'elevated risk concerns' : 'moderate risk levels'} with bearish sentiment at ${sentiments.bearish}%. Consider ${sentiments.bearish > 25 ? 'defensive positioning' : 'balanced allocation'} in current market conditions.`,
             `Market psychology shows ${sentiments.neutral > 25 ? 'high uncertainty' : 'directional consensus'} with ${sentiments.neutral}% neutral sentiment. This ${sentiments.neutral > 20 ? 'suggests potential volatility' : 'indicates market conviction'} in the near term.`
         ];
-        
+
         return analyses[Math.floor(Math.random() * analyses.length)];
     }
 
@@ -306,7 +298,7 @@ class FundamentalPlatform {
         // Remove active class from all tabs and content
         document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        
+
         // Add active class to selected tab and content
         event.target.classList.add('active');
         document.getElementById(tabName).classList.add('active');
@@ -360,26 +352,34 @@ class FundamentalPlatform {
         generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Portfolio...';
         generateBtn.disabled = true;
 
+        // Add progress indicator
+        this.showLoadingProgress();
+
         // Simulate AI processing
         setTimeout(() => {
             const portfolio = this.calculateOptimalPortfolio(investmentAmount, riskTolerance, investmentGoals, timeHorizon);
             this.displayPortfolio(portfolio);
             this.calculateRiskMetrics(portfolio);
             this.generatePortfolioAnalysis(portfolio);
-            
+
             // Reset button
             generateBtn.innerHTML = originalText;
             generateBtn.disabled = false;
-            
-            // Show results
-            document.getElementById('portfolioResult').classList.remove('hidden');
+
+            // Show results with animation
+            const resultDiv = document.getElementById('portfolioResult');
+            resultDiv.classList.remove('hidden');
+            resultDiv.classList.add('animate-fade-in');
+
+            // Show success notification
+            this.showNotification('Portfolio generated successfully! 🎉');
         }, 3000);
     }
 
     calculateOptimalPortfolio(amount, risk, goals, timeHorizon) {
         const sectorAllocations = this.getSectorAllocations(risk, goals, timeHorizon);
         const stocks = this.getStockRecommendations();
-        
+
         const portfolio = {
             totalValue: amount,
             allocations: [],
@@ -568,9 +568,9 @@ class FundamentalPlatform {
             .forEach(allocation => {
                 const item = document.createElement('div');
                 item.className = 'allocation-item';
-                
+
                 const topStocks = allocation.stocks.slice(0, 3).join(', ');
-                
+
                 item.innerHTML = `
                     <div class="allocation-header">
                         <div class="allocation-sector">${allocation.sector}</div>
@@ -582,7 +582,7 @@ class FundamentalPlatform {
                     </div>
                     <div class="allocation-stocks">Top holdings: ${topStocks}</div>
                 `;
-                
+
                 container.appendChild(item);
             });
     }
@@ -624,11 +624,11 @@ class FundamentalPlatform {
     generatePortfolioAnalysis(portfolio) {
         const analyses = [
             `Your portfolio shows a ${portfolio.expectedReturn.toFixed(1)}% expected annual return with ${portfolio.expectedVolatility.toFixed(1)}% volatility. The Sharpe ratio of ${portfolio.sharpeRatio.toFixed(2)} indicates ${portfolio.sharpeRatio > 1 ? 'excellent' : portfolio.sharpeRatio > 0.5 ? 'good' : 'moderate'} risk-adjusted returns.`,
-            
+
             `The allocation emphasizes ${portfolio.allocations[0].sector.toLowerCase()} (${portfolio.allocations[0].percentage}%) and ${portfolio.allocations[1].sector.toLowerCase()} (${portfolio.allocations[1].percentage}%), providing ${portfolio.allocations[0].percentage + portfolio.allocations[1].percentage > 40 ? 'concentrated' : 'balanced'} sector exposure.`,
-            
+
             `Based on your risk tolerance and time horizon, this portfolio targets ${portfolio.expectedReturn < 8 ? 'conservative' : portfolio.expectedReturn < 12 ? 'moderate' : 'aggressive'} growth with ${portfolio.allocations.length} diversified holdings across multiple sectors.`,
-            
+
             `The portfolio's beta of approximately ${(0.8 + Math.random() * 0.4).toFixed(2)} suggests ${(0.8 + Math.random() * 0.4) > 1 ? 'higher' : 'lower'} volatility compared to the overall market, aligning with your risk preferences.`
         ];
 
@@ -638,15 +638,15 @@ class FundamentalPlatform {
     runBacktest() {
         const years = [1, 2, 3, 5, 10];
         const container = document.getElementById('backtestSummary');
-        
+
         container.innerHTML = '<p>Running historical backtest...</p>';
-        
+
         setTimeout(() => {
             const results = years.map(year => {
                 const annualReturn = 6 + Math.random() * 8;
                 const volatility = 12 + Math.random() * 8;
                 const maxDrawdown = Math.random() * 15 + 5;
-                
+
                 return {
                     period: `${year} Year${year > 1 ? 's' : ''}`,
                     return: annualReturn.toFixed(1),
@@ -695,77 +695,81 @@ class FundamentalPlatform {
     }
 
     toggleChatbot() {
-        const chatbot = document.getElementById('chatbotWindow');
-        chatbot.style.display = chatbot.style.display === 'flex' ? 'none' : 'flex';
-        
-        if (chatbot.style.display === 'flex') {
-            document.getElementById('chatInput').focus();
-        }
+        //Remove Chatbot functionality
+        //const chatbot = document.getElementById('chatbotWindow');
+        //chatbot.style.display = chatbot.style.display === 'flex' ? 'none' : 'flex';
+
+        //if (chatbot.style.display === 'flex') {
+        //    document.getElementById('chatInput').focus();
+        //}
     }
 
     sendMessage() {
-        const input = document.getElementById('chatInput');
-        const message = input.value.trim();
-        
-        if (!message) return;
-        
-        this.addMessage(message, 'user');
-        input.value = '';
-        
+        //Remove Chatbot Functionality
+        //const input = document.getElementById('chatInput');
+        //const message = input.value.trim();
+
+        //if (!message) return;
+
+        //this.addMessage(message, 'user');
+        //input.value = '';
+
         // Simulate AI response
-        setTimeout(() => {
-            const response = this.generateAIResponse(message);
-            this.addMessage(response, 'ai');
-        }, 1000);
+        //setTimeout(() => {
+        //    const response = this.generateAIResponse(message);
+        //    this.addMessage(response, 'ai');
+        //}, 1000);
     }
 
     addMessage(text, sender) {
-        const container = document.getElementById('chatbotMessages');
-        const message = document.createElement('div');
-        message.className = `message ${sender}`;
-        message.innerHTML = `<p>${text}</p>`;
-        container.appendChild(message);
-        container.scrollTop = container.scrollHeight;
+        //Remove Chatbot Functionality
+        //const container = document.getElementById('chatbotMessages');
+        //const message = document.createElement('div');
+        //message.className = `message ${sender}`;
+        //message.innerHTML = `<p>${text}</p>`;
+        //container.appendChild(message);
+        //container.scrollTop = container.scrollHeight;
     }
 
     generateAIResponse(userMessage) {
-        const message = userMessage.toLowerCase();
-        
-        if (message.includes('portfolio') || message.includes('allocation')) {
-            return "I can help you optimize your portfolio allocation based on your risk tolerance and investment goals. Would you like me to analyze your current portfolio or suggest improvements?";
-        }
-        
-        if (message.includes('risk')) {
-            return "Risk management is crucial for long-term investment success. I recommend diversifying across asset classes and regularly rebalancing your portfolio. What's your current risk tolerance level?";
-        }
-        
-        if (message.includes('market') || message.includes('stock')) {
-            return "Current market conditions show mixed signals with technology stocks leading gains while defensive sectors provide stability. I'm monitoring 500+ stocks in real-time to provide you with the best investment opportunities.";
-        }
-        
-        if (message.includes('diversification') || message.includes('diversify')) {
-            return "Diversification is key to reducing portfolio risk. I recommend spreading investments across at least 8-10 different sectors and including both domestic and international exposure. Your current portfolio shows good diversification across major sectors.";
-        }
-        
-        if (message.includes('ai') || message.includes('artificial intelligence')) {
-            return "I use advanced machine learning algorithms to analyze market patterns, sentiment data, and economic indicators. This helps me provide personalized investment recommendations and real-time portfolio optimization suggestions.";
-        }
-        
-        if (message.includes('performance') || message.includes('return')) {
-            return "Historical performance shows that diversified portfolios typically generate 7-12% annual returns over long periods. However, past performance doesn't guarantee future results. I can run backtests on your specific portfolio allocation.";
-        }
-        
-        return "I'm your AI investment advisor, ready to help with portfolio optimization, risk analysis, market insights, and investment strategies. What specific aspect of investing would you like to discuss?";
+        //Remove Chatbot Functionality
+        //const message = userMessage.toLowerCase();
+
+        //if (message.includes('portfolio') || message.includes('allocation')) {
+        //    return "I can help you optimize your portfolio allocation based on your risk tolerance and investment goals. Would you like me to analyze your current portfolio or suggest improvements?";
+        //}
+
+        //if (message.includes('risk')) {
+        //    return "Risk management is crucial for long-term investment success. I recommend diversifying across asset classes and regularly rebalancing your portfolio. What's your current risk tolerance level?";
+        //}
+
+        //if (message.includes('market') || message.includes('stock')) {
+        //    return "Current market conditions show mixed signals with technology stocks leading gains while defensive sectors provide stability. I'm monitoring 500+ stocks in real-time to provide you with the best investment opportunities.";
+        //}
+
+        //if (message.includes('diversification') || message.includes('diversify')) {
+        //    return "Diversification is key to reducing portfolio risk. I recommend spreading investments across at least 8-10 different sectors and including both domestic and international exposure. Your current portfolio shows good diversification across major sectors.";
+        //}
+
+        //if (message.includes('ai') || message.includes('artificial intelligence')) {
+        //    return "I use advanced machine learning algorithms to analyze market patterns, sentiment data, and economic indicators. This helps me provide personalized investment recommendations and real-time portfolio optimization suggestions.";
+        //}
+
+        //if (message.includes('performance') || message.includes('return')) {
+        //    return "Historical performance shows that diversified portfolios typically generate 7-12% annual returns over long periods. However, past performance doesn't guarantee future results. I can run backtests on your specific portfolio allocation.";
+        //}
+
+        //return "I'm your AI investment advisor, ready to help with portfolio optimization, risk analysis, market insights, and investment strategies. What specific aspect of investing would you like to discuss?";
     }
 
     createPerformanceChart() {
         const ctx = document.getElementById('performanceChart').getContext('2d');
-        
+
         // Generate sample data
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const portfolioData = months.map((_, i) => 10000 * Math.pow(1.08, i/12) + (Math.random() - 0.5) * 500);
         const marketData = months.map((_, i) => 10000 * Math.pow(1.06, i/12) + (Math.random() - 0.5) * 800);
-        
+
         new Chart(ctx, {
             type: 'line',
             data: {
@@ -829,20 +833,20 @@ class FundamentalPlatform {
     exportToPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        
+
         doc.setFontSize(20);
         doc.text('Fundamental Investment Portfolio Report', 20, 20);
-        
+
         doc.setFontSize(12);
         doc.text('Generated on: ' + new Date().toLocaleDateString(), 20, 40);
-        
+
         if (this.portfolioData) {
             doc.text('Portfolio Summary:', 20, 60);
             doc.text(`Total Investment: $${this.portfolioData.totalValue.toLocaleString()}`, 20, 80);
             doc.text(`Expected Return: ${this.portfolioData.expectedReturn.toFixed(1)}%`, 20, 100);
             doc.text(`Expected Volatility: ${this.portfolioData.expectedVolatility.toFixed(1)}%`, 20, 120);
             doc.text(`Sharpe Ratio: ${this.portfolioData.sharpeRatio.toFixed(2)}`, 20, 140);
-            
+
             doc.text('Asset Allocation:', 20, 170);
             let yPos = 190;
             this.portfolioData.allocations.forEach(allocation => {
@@ -852,7 +856,7 @@ class FundamentalPlatform {
                 }
             });
         }
-        
+
         doc.save('fundamental_portfolio_report.pdf');
     }
 
@@ -861,7 +865,7 @@ class FundamentalPlatform {
             alert('Please generate a portfolio first');
             return;
         }
-        
+
         const data = this.portfolioData.allocations.map(allocation => ({
             Sector: allocation.sector,
             Percentage: allocation.percentage + '%',
@@ -869,11 +873,11 @@ class FundamentalPlatform {
             'Expected Return': allocation.expectedReturn.toFixed(1) + '%',
             Volatility: allocation.volatility.toFixed(1) + '%'
         }));
-        
+
         const ws = XLSX.utils.json_to_sheet(data);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Portfolio');
-        
+
         XLSX.writeFile(wb, 'fundamental_portfolio.xlsx');
     }
 
@@ -882,7 +886,7 @@ class FundamentalPlatform {
             alert('Please generate a portfolio first');
             return;
         }
-        
+
         const csvContent = [
             ['Sector', 'Percentage', 'Amount', 'Expected Return', 'Volatility'],
             ...this.portfolioData.allocations.map(allocation => [
@@ -893,7 +897,7 @@ class FundamentalPlatform {
                 allocation.volatility.toFixed(1) + '%'
             ])
         ].map(row => row.join(',')).join('\n');
-        
+
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -901,6 +905,44 @@ class FundamentalPlatform {
         a.download = 'fundamental_portfolio.csv';
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    showLoadingProgress() {
+        const steps = [
+            'Analyzing market conditions...',
+            'Calculating optimal allocations...',
+            'Running risk assessments...',
+            'Generating AI recommendations...',
+            'Finalizing portfolio...'
+        ];
+
+        let currentStep = 0;
+        const interval = setInterval(() => {
+            if (currentStep < steps.length) {
+                console.log(steps[currentStep]);
+                currentStep++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 600);
+    }
+
+    showNotification(message) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'notification show';
+        notification.innerHTML = message;
+        document.body.appendChild(notification);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
     }
 
     closeModal(modalId) {
@@ -959,4 +1001,3 @@ document.addEventListener('DOMContentLoaded', function() {
         platform.generateRebalancingSuggestions();
     }, 3000);
 });
-
