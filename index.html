@@ -5,22 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fundamental - AI-Powered Investment Platform</title>
+    <meta name="description" content="Advanced AI-powered investment platform for portfolio optimization and market analysis">
+    <meta name="keywords" content="investment, portfolio, AI, finance, stocks, trading">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>"></meta>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-gold: #FFD700;
-            --dark-bg: #0B1D40;          /* Navy blue background */
-            --darker-bg: #081830;        /* Slightly darker navy for contrast */
-            --card-bg: #0D223F;          /* Slightly lighter navy for card contrast */
+            --dark-bg: #0A1628;          /* Richer, deeper navy */
+            --darker-bg: #061118;        /* Even deeper navy for contrast */
+            --card-bg: #0F1B2E;          /* Slightly lighter navy for card contrast */
 
             --text-primary: #FFFFFF;     /* White text */
-            --text-secondary: #DDDDDD;
-            --text-muted: #AAAAAA;
+            --text-secondary: #E1E5E9;
+            --text-muted: #9CA3AF;
 
-            --border-color: var(--primary-gold);  /* Gold outlines */
-            --shadow-dark: 0 8px 32px rgba(255, 215, 0, 0.1);
-            --shadow-gold: 0 4px 20px rgba(255, 215, 0, 0.3);
+            --border-color: rgba(255, 215, 0, 0.3);  /* More subtle gold borders */
+            --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-gold: 0 4px 20px rgba(255, 215, 0, 0.2);
 
             --gradient-primary: linear-gradient(135deg, var(--primary-gold) 0%, #fff 100%);
             --gradient-bg: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
@@ -1038,9 +1041,7 @@
     </style>
 </head>
 <body>
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-    </div>
+    
 
     <nav class="navbar">
         <div class="nav-container">
@@ -1057,19 +1058,19 @@
     <section class="hero">
         <div class="container">
             <h1 class="hero-title">AI-Powered Investment Intelligence</h1>
-            <p class="hero-subtitle">Make smarter investment decisions with real-time market data, advanced AI analysis, and personalized portfolio management</p>
+            <p class="hero-subtitle">Simplify your investment decisions with real-time market insights, advanced AI analysis, and personalized portfolio management</p>
             <div class="hero-stats">
                 <div class="stat-item">
-                    <span class="stat-number" id="totalUsers">10,000+</span>
-                    <span class="stat-label">Active Users</span>
+                    <span class="stat-number">AI-Powered</span>
+                    <span class="stat-label">Analysis</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" id="totalAssets">$2.5B</span>
-                    <span class="stat-label">Assets Managed</span>
+                    <span class="stat-number">Real-Time</span>
+                    <span class="stat-label">Market Insights</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" id="avgReturn">12.3%</span>
-                    <span class="stat-label">Avg Annual Return</span>
+                    <span class="stat-number">Personalized</span>
+                    <span class="stat-label">Portfolio Management</span>
                 </div>
             </div>
         </div>
@@ -1081,14 +1082,10 @@
             <div class="dashboard">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Live Market Data</h3>
-                        <i class="fas fa-chart-line card-icon"></i>
-                    </div>
-                    <div class="market-data" id="marketData">
-                        <!-- Market data will be populated here -->
+                        <h3 class="card-title">Market Insights</h3>
+                        <i class="fas fa-lightbulb card-icon"></i>
                     </div>
                     <div class="market-insights">
-                        <h4 style="color: var(--primary-gold); margin-bottom: 1rem;">Market Insights</h4>
                         <div id="marketInsights">
                             <!-- AI-generated market insights -->
                         </div>
@@ -1193,7 +1190,7 @@
 
                 <div class="tab-content" id="advanced">
                     <div class="form-group">
-                        <label class="form-label">Market Sentiment Override</label>
+                        <label class="form-label">Market Sentiment</label>
                         <select class="form-select" id="marketSentimentOverride">
                             <option value="auto">Auto-detect from AI analysis</option>
                             <option value="bullish">Bullish - Expecting growth</option>
@@ -1317,71 +1314,9 @@
         </section>
     </main>
 
-    <div class="chatbot-container">
-        <button class="chatbot-trigger" onclick="toggleChatbot()">
-            <i class="fas fa-comments"></i>
-        </button>
-        <div class="chatbot-window" id="chatbotWindow">
-            <div class="chatbot-header">
-                <span>AI Investment Advisor</span>
-                <button class="modal-close" onclick="toggleChatbot()">&times;</button>
-            </div>
-            <div class="chatbot-messages" id="chatbotMessages">
-                <div class="message ai">
-                    <p>Hello! I'm your AI investment advisor. I can help you with portfolio analysis, market insights, and investment strategies. What would you like to know?</p>
-                </div>
-            </div>
-            <div class="chatbot-input">
-                <input type="text" id="chatInput" placeholder="Ask about investments, markets, or your portfolio...">
-                <button onclick="sendMessage()">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    </div>
+    
 
-<script>
-    function loadMarketData() {
-      const apiKey = '0WGVLGKNHEXL3CBU'; // Replace with your valid API key
-      const symbols = ['AAPL', 'GOOGL', 'MSFT', 'TSLA'];
-
-      const container = document.getElementById('marketData');
-      container.innerHTML = 'Loading data...';
-
-      let html = '';
-
-      for (let symbol of symbols) {
-        try {
-          const res = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${aapl}&apikey=${googl}`);
-          const data = await res.json();
-          const quote = data['Global Quote'];
-
-          const price = parseFloat(quote['05. price']);
-          const change = parseFloat(quote['09. change']);
-          const percent = quote['10. change percent'];
-
-          html += `
-            <div class="data-card">
-              <h3>${symbol}</h3>
-              <p>$${price.toFixed(2)}</p>
-              <p style="color:${change >= 0 ? 'limegreen' : 'red'};">
-                ${change >= 0 ? '↑' : '↓'} ${change.toFixed(2)} (${percent})
-              </p>
-            </div>
-          `;
-        } catch (err) {
-          html += `<div class="data-card"><h3>${symbol}</h3><p>⚠️ Error loading</p></div>`;
-        }
-      }
-
-      container.innerHTML = html;
-    }
-
-    window.onload = loadMarketData;
-    </script>
-
-
-    <div class="modal" id="portfolioModal">
+<div class="modal" id="portfolioModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Portfolio Details</h3>
@@ -1417,14 +1352,14 @@
         </div>
     </footer>
 
-    <div id="marketData"></div>
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
+
+
+
 
 
