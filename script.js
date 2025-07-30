@@ -210,38 +210,32 @@ class FundamentalPlatform {
         });
     }
 
-    async loadFinancialNews() {
-        // Simulate news data (in production, use actual news API)
-        const mockNews = [
-            {
-                title: "Federal Reserve Signals Potential Rate Cuts Amid Economic Uncertainty",
-                summary: "The Federal Reserve indicated a more dovish stance in recent meetings, suggesting potential rate cuts to support economic growth.",
-                source: "Financial Times",
-                time: "2 hours ago",
-                sentiment: "neutral"
-            },
-            {
-                title: "AI Semiconductor Stocks Rally on Strong Q4 Earnings",
-                summary: "Major AI chipmakers reported better-than-expected earnings, driving significant gains in the technology sector.",
-                source: "Wall Street Journal",
-                time: "4 hours ago",
-                sentiment: "positive"
-            },
-            {
-                title: "Renewable Energy Investments Surge as Climate Policies Strengthen",
-                summary: "Clean energy stocks saw substantial inflows as governments worldwide implement stronger climate policies.",
-                source: "Reuters",
-                time: "6 hours ago",
-                sentiment: "positive"
-            },
-            {
-                title: "Banking Sector Faces Headwinds from Regulatory Changes",
-                summary: "New banking regulations could impact profitability across major financial institutions.",
-                source: "Bloomberg",
-                time: "8 hours ago",
-                sentiment: "negative"
-            }
-        ];
+async function loadFinancialNews() {
+  const apiKey = '6497e809c7954fb8888e4bf96ba79950'; // Your actual key
+  const url = `https://newsapi.org/v2/everything?q=stocks+OR+finance+OR+economy&language=en&sortBy=publishedAt&pageSize=5&apiKey=${apiKey}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.status !== "ok") throw new Error(data.message);
+
+    const news = data.articles.map(article => ({
+      title: article.title,
+      summary: article.description || "No summary available.",
+      source: article.source.name,
+      time: new Date(article.publishedAt).toLocaleString(),
+      sentiment: "neutral" // Placeholder for now
+    }));
+
+    console.log(news);
+    return news;
+
+  } catch (error) {
+    console.error("Failed to load financial news:", error);
+    return [];
+  }
+}
 
         const newsFeed = document.getElementById('newsFeed');
         newsFeed.innerHTML = '';
