@@ -188,8 +188,25 @@
     .qtitle{font-size:28px; text-align:center; margin:8px 0 16px; font-weight:800; color:#0f172a}
 
     /* options */
-    .optlist{display:grid; gap:14px; margin:10px auto; max-width:520px}
-    .optlist--grid{grid-template-columns:repeat(auto-fit, minmax(160px,1fr))}
+    /* Sector/option grid – mobile-safe */
+    .optlist{
+      display:grid;
+      gap:14px;
+      margin:10px 0;          /* remove the center max-width that caused cropping */
+    }
+
+    .optlist--grid{
+      grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));
+    }
+
+    /* Slightly smaller text + tighter pills on narrow phones */
+    @media (max-width:480px){
+      .optlist--grid{
+        grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));
+      }
+      .opt span{ font-size:16px; }
+      .opt{ padding:8px 10px; } /* keep pills from overflowing */
+    }
     .optlist--row{grid-template-columns:repeat(2, minmax(140px,1fr)); justify-items:center}
     .opt{display:flex; align-items:center; gap:12px; cursor:pointer; padding:10px 12px; border-radius:12px; border:1px solid #e4eaf5; background:#fff}
     .opt--pill{justify-content:center}
@@ -579,7 +596,7 @@
       padding:4px 10px;
       bo
 
-    
+
   </style>
 
 </head>
@@ -1181,7 +1198,7 @@ function copySummary(rows){
     draw();
   }
 
-  
+
 /* ---------- QUIZ ---------- */
   function initQuiz(){
     const form   = $("#quiz-form");
@@ -1202,7 +1219,16 @@ function copySummary(rows){
       // Always rebuild cleanly to avoid dupes / stale nodes
       sectorBox.replaceChildren();
 
-      const sectors = [...new Set(IDEAS.map(x => x.sector)), "Bonds", "Commodities", "Multi"];
+      // Build a UNIQUE sector list (add only sectors NOT already in IDEAS)
+      const sectors = Array.from(
+        new Set([
+          ...IDEAS.map(x => x.sector),
+          "Real Estate",
+          "Materials",
+          "Utilities"
+        ])
+      ).sort();
+
 
       sectors.forEach(s => {
         const lbl = document.createElement("label");
