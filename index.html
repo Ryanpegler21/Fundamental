@@ -1,1361 +1,1329 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fundamental - AI-Powered Investment Platform</title>
-    <meta name="description" content="Advanced AI-powered investment platform for portfolio optimization and market analysis">
-    <meta name="keywords" content="investment, portfolio, AI, finance, stocks, trading">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>"></meta>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-gold: #FFFFFF;
-            --dark-bg: #000000;          /* Richer, deeper navy */
-            --darker-bg: #000000;        /* Even deeper navy for contrast */
-            --card-bg: #000000;          /* Slightly lighter navy for card contrast */
-
-            --text-primary: #FFFFFF;     /* White text */
-            --text-secondary: #E1E5E9;
-            --text-muted: #9CA3AF;
-
-            --border-color: rgba(255, 215, 0, 0.3);  /* More subtle gold borders */
-            --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --shadow-gold: 0 4px 20px rgba(255, 215, 0, 0.2);
-
-            --gradient-primary: linear-gradient(135deg, var(--primary-gold) 0%, #fff 100%);
-            --gradient-bg: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
-        }
-
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--dark-bg); /* solid navy */
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--dark-bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        .loading-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid var(--border-color);
-            border-top: 3px solid var(--primary-gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: 900;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-gold);
-        }
-
-        .hero {
-            padding: 120px 2rem 80px;
-            text-align: center;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: fadeInUp 1s ease;
-        }
-
-        .hero-subtitle {
-            font-size: 1.4rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            animation: fadeInUp 1s ease 0.2s both;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 4rem;
-            margin-top: 3rem;
-            animation: fadeInUp 1s ease 0.4s both;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-gold);
-            display: block;
-        }
-
-        .stat-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section {
-            padding: 4rem 0;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: var(--primary-gold);
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-gold);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--primary-gold);
-        }
-
-        .card-icon {
-            font-size: 1.5rem;
-            color: var(--primary-gold);
-        }
-
-        .market-data {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .market-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .market-symbol {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--primary-gold);
-        }
-
-        .market-price {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin: 0.5rem 0;
-        }
-
-        .market-change {
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .market-change.positive {
-            color: var(--accent-green);
-        }
-
-        .market-change.negative {
-            color: var(--accent-red);
-        }
-
-        .portfolio-form {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--primary-gold);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
-        }
-
-        .form-select {
-            width: 100%;
-            padding: 1rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .risk-slider {
-            width: 100%;
-            height: 6px;
-            background: var(--border-color);
-            border-radius: 3px;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .risk-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: var(--primary-gold);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .risk-display {
-            text-align: center;
-            margin-top: 0.5rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .sector-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .sector-btn {
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .sector-btn:hover {
-            background: rgba(255, 215, 0, 0.1);
-            border-color: var(--primary-gold);
-        }
-
-        .sector-btn.selected {
-            background: var(--primary-gold);
-            color: var(--dark-bg);
-            border-color: var(--primary-gold);
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: var(--dark-bg);
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-gold);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary-gold);
-            border: 2px solid var(--primary-gold);
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0.5rem;
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary-gold);
-            color: var(--dark-bg);
-        }
-
-        .portfolio-result {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            margin-top: 2rem;
-        }
-
-        .allocation-chart {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .allocation-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-        }
-
-        .allocation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .allocation-sector {
-            font-weight: 700;
-            color: var(--primary-gold);
-        }
-
-        .allocation-amount {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--text-primary);
-        }
-
-        .allocation-percentage {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .allocation-stocks {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 0.5rem 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-primary);
-            transition: width 1s ease;
-        }
-
-        .ai-analysis {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--primary-gold);
-            margin: 2rem 0;
-        }
-
-        .ai-analysis-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .ai-icon {
-            font-size: 1.5rem;
-            color: var(--primary-gold);
-            margin-right: 1rem;
-        }
-
-        .ai-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-gold);
-        }
-
-        .sentiment-indicator {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .sentiment-item {
-            text-align: center;
-            padding: 1rem;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-        }
-
-        .sentiment-score {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .sentiment-score.bullish {
-            color: var(--accent-green);
-        }
-
-        .sentiment-score.bearish {
-            color: var(--accent-red);
-        }
-
-        .sentiment-score.neutral {
-            color: var(--primary-gold);
-        }
-
-        .news-feed {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            margin: 2rem 0;
-        }
-
-        .news-item {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            transition: background-color 0.3s ease;
-        }
-
-        .news-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .news-item:last-child {
-            border-bottom: none;
-        }
-
-        .news-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .news-summary {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .news-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .chatbot-container {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 1000;
-        }
-
-        .chatbot-trigger {
-            width: 60px;
-            height: 60px;
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: 50%;
-            color: var(--dark-bg);
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: var(--shadow-gold);
-            transition: all 0.3s ease;
-        }
-
-        .chatbot-trigger:hover {
-            transform: scale(1.1);
-        }
-
-        .chatbot-window {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 400px;
-            height: 500px;
-            background: var(--card-bg);
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chatbot-header {
-            background: var(--gradient-primary);
-            color: var(--dark-bg);
-            padding: 1rem;
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chatbot-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-
-        .message {
-            margin-bottom: 1rem;
-            padding: 0.8rem;
-            border-radius: 10px;
-            max-width: 80%;
-        }
-
-        .message.user {
-            background: var(--primary-gold);
-            color: var(--dark-bg);
-            margin-left: auto;
-        }
-
-        .message.ai {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-        }
-
-        .chatbot-input {
-            display: flex;
-            padding: 1rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .chatbot-input input {
-            flex: 1;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            margin-right: 0.5rem;
-        }
-
-        .chatbot-input button {
-            padding: 0.8rem 1rem;
-            background: var(--primary-gold);
-            color: var(--dark-bg);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .performance-chart {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            margin: 2rem 0;
-        }
-
-        .chart-container {
-            width: 100%;
-            height: 400px;
-            position: relative;
-        }
-
-        .risk-metrics {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .metric-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1.5rem;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .metric-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary-gold);
-        }
-
-        .metric-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-
-        .rebalancing-suggestions {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            margin: 2rem 0;
-        }
-
-        .suggestion-item {
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--primary-gold);
-        }
-
-        .suggestion-action {
-            font-weight: 600;
-            color: var(--primary-gold);
-            margin-bottom: 0.5rem;
-        }
-
-        .suggestion-reason {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .market-insights {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            margin: 2rem 0;
-        }
-
-        .insight-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .insight-icon {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            color: var(--primary-gold);
-        }
-
-        .insight-content {
-            flex: 1;
-        }
-
-        .insight-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .insight-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .backtesting-results {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            margin: 2rem 0;
-        }
-
-        .backtest-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .backtest-metric {
-            text-align: center;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        .backtest-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary-gold);
-        }
-
-        .backtest-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-
-        .export-options {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-dark);
-            margin: 2rem 0;
-        }
-
-        .export-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-gold);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .tabs {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 1rem;
-            text-align: center;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .tab.active {
-            background: var(--primary-gold);
-            color: var(--dark-bg);
-            font-weight: 600;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .footer {
-            background: var(--darker-bg);
-            padding: 3rem 0;
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h3 {
-            color: var(--primary-gold);
-            margin-bottom: 1rem;
-        }
-
-        .footer-section p, .footer-section a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .footer-section a:hover {
-            color: var(--primary-gold);
-        }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .hero-stats {
-                flex-direction: column;
-                gap: 2rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .chatbot-window {
-                width: 90vw;
-                right: 5vw;
-            }
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* Apply gold outlines to components */
-        .card,
-        .form-input,
-        .form-select,
-        .sector-btn,
-        .news-item,
-        .market-item,
-        .metric-card,
-        .suggestion-item,
-        .modal-content,
-        .chatbot-window {
-            border: 1px solid var(--primary-gold);
-        }
-
-        /* Button styling with gold outlines */
-        .btn-primary,
-        .btn-secondary {
-            border: 2px solid var(--primary-gold);
-        }
-
-        /* Button color updates */
-        .btn-primary {
-            background: var(--primary-gold);
-            color: var(--dark-bg);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary-gold);
-            border: 2px solid var(--primary-gold);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary-gold);
-            color: var(--dark-bg);
-        }
-
-    </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Fundamental — Swipe Your Investment Ideas</title>
+  <style>
+  :root{
+    /* new palette: white canvas, navy text, gold accents */
+    --bg:#ffffff;
+    --card:#ffffff;
+    --soft:#fbfcfe;
+    --border:#e6ebf3;
+    --text:#0a1e3a;           /* navy */
+    --muted:#5a6b86;          /* slate */
+    --accent:#caa14a;         /* gold */
+    --accent-600:#b48932;     /* darker gold (hover) */
+    --navy:#0a1e3a;
+    --navy-600:#072248;
+    --green:#1a7f53;
+    --red:#c13232;
+    --yellow:#caa14a;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:ui-sans-serif,system-ui,Segoe UI,Inter,Roboto,Arial;
+    }
+  .container{max-width:1100px;margin:20px auto;padding:0 16px}
+  .accent{color:var(--accent)}
+  /* header on white */
+  .nav{
+    position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.9); backdrop-filter:saturate(130%) blur(10px)
+  }
+  .brand{font-weight:800; letter-spacing:.4px; color:var(--navy)}
+  .nav__links{display:flex; gap:8px}
+  .nav__link{
+    background:transparent; color:var(--navy); border:1px solid transparent;
+    padding:8px 12px; border-radius:10px; cursor:pointer
+  }
+  .nav__link:hover{border-color:var(--border)}
+  .nav__link.btn--primary{
+    background:var(--accent); border-color:var(--accent); color:var(--navy); font-weight:600;
+  }
+
+  /* views */
+  .view{display:none; animation:fade .15s ease-in}
+  .view--active{display:block}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+
+  /* cards now white with subtle shadow */
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:16px; margin-bottom:16px; box-shadow:0 6px 18px rgba(2,25,71,.06)
+  }
+  .hero h1{margin:.2rem 0 0 0; font-size:32px; line-height:1.15}
+  .hero .row{margin-top:10px}
+
+  .row{display:flex; align-items:center}
+  .row.wrap{flex-wrap:wrap}
+  .row.gap{gap:10px}
+  .row.center{justify-content:center}
+  .row.between{justify-content:space-between}
+  .mt8{margin-top:8px} .mt12{margin-top:12px} .mt16{margin-top:16px}
+  .tiny{font-size:12px} .muted{color:var(--muted)}
+
+  .grid{display:grid; gap:16px}
+  .grid--2{grid-template-columns:1fr}
+  .grid--3{grid-template-columns:1fr}
+  @media (min-width:860px){
+    .grid--2{grid-template-columns:1fr 1fr}
+    .grid--3{grid-template-columns:repeat(3,1fr)}
+  }
+
+  /* buttons: primary gold, secondary navy outline */
+  .btn{
+    background:#fff; border:1px solid var(--navy); color:var(--navy);
+    padding:10px 14px; border-radius:12px; cursor:pointer
+  }
+  .btn:hover{background:#f7faff}
+  .btn--primary{
+    background:var(--accent); border-color:var(--accent); color:var(--navy); font-weight:600;
+  }
+  .btn--primary:hover{background:var(--accent-600); border-color:var(--accent-600); color:#fff}
+
+  .input{
+    background:#fff; border:1px solid var(--border); color:var(--text);
+    padding:10px 12px; border-radius:12px; min-width:220px
+  }
+  .input::placeholder{color:#8898b0}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px;
+    border:1px solid var(--border); padding:4px 8px; border-radius:999px; color:var(--muted)
+  }
+  .pill{
+    display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border);
+    background:#fff; padding:8px 10px; border-radius:999px; cursor:pointer; margin:4px 6px 0 0; color:var(--navy)
+  }
+  .pill input{accent-color:var(--accent)}
+
+  /* quiz steps */
+  .quiz-steps .step{display:none}
+  .quiz-steps .step.step--active{display:block}
+
+  /* table */
+  .table-wrap{overflow:auto; border-radius:12px}
+  .table{width:100%; border-collapse:separate; border-spacing:0; min-width:760px}
+  .table th,.table td{padding:10px; text-align:left; border-bottom:1px solid var(--border)}
+  .table thead th{background:#f5f7fb; color:var(--navy); position:sticky; top:0}
+
+  /* swipe deck */
+  .stack-wrap{position:relative; height:520px}
+  .stack{position:relative; width:100%; height:100%}
+  .card-item{position:absolute; inset:0; margin:auto; max-width:720px; height:100%;
+    transform-origin:50% 85%; transition:transform .2s ease, opacity .2s ease}
+  .card-inner{
+    background:var(--soft); border:1px solid var(--border); border-radius:18px;
+    padding:16px; height:100%; display:flex; flex-direction:column
+  }
+  .card-inner .hdr{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px}
+  .card-inner h3{margin:.3rem 0 .4rem}
+  .kv{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0}
+  .kv div{background:#f7f9fd; border:1px solid var(--border); border-radius:12px; padding:8px}
+  .tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:auto}
+  .tag{border:1px solid var(--border); border-radius:999px; padding:4px 8px; font-size:12px; color:var(--muted)}
+  .hint{background:#fff; border:1px dashed #d5dbea; border-radius:12px; padding:10px; color:var(--muted); margin-top:10px}
+
+  /* long landing page sections */
+  .section{padding:28px 16px}
+  .section.alt{background:#f7f9fd; border:1px solid var(--border); border-radius:16px}
+
+  /* footer on white */
+  .footer{margin:40px auto 28px; text-align:center; color:var(--muted)}
+
+    /* === OVERRIDES for blue accent + hero like the screenshot === */
+    :root{
+      --accent:#2563eb;     /* blue-600 */
+      --accent-600:#1d4ed8; /* blue-700 */
+    }
+
+    /* Large soft-blue hero */
+    .hero-landing{
+      position:relative; overflow:hidden;
+      border-radius:20px; padding:72px 20px; text-align:center;
+      background:linear-gradient(180deg, #f1f6ff 0%, #edf3ff 100%);
+      box-shadow:0 16px 40px rgba(2,34,95,.12);
+      border:1px solid var(--border);
+    }
+    .hero-landing h1{
+      margin:0 0 8px; font-size:54px; line-height:1.05;
+      font-weight:800; letter-spacing:-.02em; color:#0f172a;
+    }
+    .hero-landing .accent-xl{
+      font-size:44px; font-weight:800; color:var(--accent);
+    }
+    .hero-landing p.lead{
+      max-width:780px; margin:10px auto 20px; color:#475569;
+      font-size:18px; line-height:1.55;
+    }
+    .hero-landing .cta{ margin-top:14px; }
+
+    /* extra spacing for a longer, scrollable landing */
+    .section{ padding:40px 0; }
+    .grid.gap-lg{ gap:18px; }
+
+    /* primary button already uses --accent, so it will turn blue automatically */
+
+    /* === Quiz shell like your screenshot === */
+    .quiz-shell{
+      max-width:880px; margin:36px auto 48px; padding:24px; border-radius:18px;
+      background:linear-gradient(180deg,#eef5ff 0%, #eff4ff 100%);
+      border:1px solid var(--border);
+    }
+    .quiz-top{display:flex; align-items:center; gap:12px; position:relative}
+    .progress{flex:1; height:8px; background:#e8edf7; border-radius:999px; overflow:hidden}
+    .progress__bar{height:100%; background:linear-gradient(180deg, var(--accent), var(--accent-600)); transition:width .25s ease}
+    .progress__text{color:#6b7a96; font-size:14px}
+
+    .qcard{
+      margin:16px auto 0; background:#fff; border:1px solid var(--border); border-radius:14px;
+      box-shadow:0 16px 40px rgba(2,34,95,.08); padding:24px; max-width:720px;
+    }
+    .qtitle{font-size:28px; text-align:center; margin:8px 0 16px; font-weight:800; color:#0f172a}
+
+    /* options */
+    .optlist{display:grid; gap:14px; margin:10px auto; max-width:520px}
+    .optlist--grid{grid-template-columns:repeat(auto-fit, minmax(160px,1fr))}
+    .optlist--row{grid-template-columns:repeat(2, minmax(140px,1fr)); justify-items:center}
+    .opt{display:flex; align-items:center; gap:12px; cursor:pointer; padding:10px 12px; border-radius:12px; border:1px solid #e4eaf5; background:#fff}
+    .opt--pill{justify-content:center}
+    .opt input{appearance:none; width:18px; height:18px; border:2px solid var(--accent); border-radius:50%; display:inline-block; position:relative}
+    .opt input[type="checkbox"]{border-radius:6px}
+    .opt input:checked{background:radial-gradient(circle at 50% 50%, var(--accent) 50%, transparent 52%)}
+    .opt span{font-size:18px; color:#0f172a}
+    .opt:hover{background:#f7f9ff}
+
+    /* amount */
+    .amountrow{display:flex; align-items:center; gap:12px; justify-content:center}
+    .amountbadge{display:inline-block; padding:6px 10px; border-radius:999px; background:#eef3ff; color:#1d3b7a; border:1px solid #dfe7fb}
+
+    /* actions */
+    .actions{display:flex; justify-content:space-between; align-items:center; margin-top:18px}
+    .btn--ghost{background:#fff; border:1px solid #c9d4ea; color:#0f172a}
+
+    /* step transitions */
+    .step{display:none; transform:translateY(6px); opacity:0; transition:opacity .2s ease, transform .2s ease}
+    .step.step--active{display:block; opacity:1; transform:translateY(0)}
+    .hintline{color:#6b7a96; text-align:center; margin-top:6px}
+    .sectors summary{cursor:pointer; user-select:none; margin-top:8px; color:#31456e}
+
+    /* ===== Deck UI (card like your screenshot) ===== */
+    .deck-shell{padding:18px}
+    .deck-top{display:flex; align-items:center; gap:14px; margin:4px 4px 10px}
+    .deck-progress{flex:1; height:8px; background:#e6eaf3; border-radius:999px; overflow:hidden}
+    .deck-progress__bar{height:100%; background:linear-gradient(180deg,#2563eb,#1d4ed8); transition:width .25s ease}
+    .deck-counts{text-align:center; min-width:180px; color:#6b7a96}
+
+    .idea{
+      background:#fff; border:1px solid var(--border); border-radius:14px;
+      box-shadow:0 18px 44px rgba(2,34,95,.10); padding:16px; height:100%; display:flex; flex-direction:column;
+    }
+    .idea .hdr{display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:10px}
+    .idea .title{font-size:24px; font-weight:800; margin:0}
+    .badges{display:flex; gap:8px; flex-wrap:wrap}
+    .badge-chip{
+      background:#eef3ff; border:1px solid #dbe4fb; color:#1d3b7a;
+      padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600
+    }
+    .badge-pill{
+      background:#0f172a; color:#fff; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700
+    }
+    .ticker{border-radius:999px; padding:6px 10px; border:1px solid #e6eaf3; color:#0f172a; background:#fff; font-size:12px; font-weight:700}
+
+    .kpis{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0 6px}
+    .krow{display:flex; align-items:center; justify-content:space-between; background:#f8fbff; border:1px solid #e6eaf3; border-radius:10px; padding:10px 12px}
+    .krow .lbl{color:#0f172a; font-weight:600}
+    .krow .val{color:#0a7a2a; font-weight:700}
+    .krow .val.neg{color:#b02b2b}
+
+    .meter{height:8px; background:#e6eaf3; border-radius:999px; overflow:hidden; margin-top:6px}
+    .meter > div{height:100%; background:#22c55e; transition:width .25s ease}
+    .bullets{margin:10px 0 0 0; padding-left:18px}
+    .bullets li{margin:6px 0; color:#0f172a}
+
+    .reason{
+      margin-top:12px; background:#eef6ff; border:1px solid #d9e6ff;
+      border-radius:12px; padding:12px
+    }
+    .reason b{color:#0f172a}
+    .subtle{color:#6b7a96; font-size:12px; margin-top:6px}
+
+    .deck-actions{
+      display:flex; gap:14px; justify-content:space-between; margin-top:14px; flex-wrap:wrap
+    }
+    .btn--decline{
+      background:#fff; border:1px solid #f0c6c6; color:#b02b2b; font-weight:700; padding:14px 18px; border-radius:12px; flex:1 1 240px
+    }
+    .btn--decline:hover{background:#fff5f5}
+    .btn--approve{
+      background:linear-gradient(180deg,#22c55e,#16a34a); color:#fff; border:1px solid #149a45;
+      font-weight:800; padding:14px 18px; border-radius:12px; flex:1 1 240px;
+      box-shadow:0 12px 30px rgba(22,163,74,.25)
+    }
+    .btn--approve:hover{filter:brightness(.97)}
+
+    .stack-wrap{height:auto} /* since we’re showing 1 card at a time with big content */
+    .card-item{position:relative; inset:auto; height:auto; transform:none}
+    .card-inner{background:transparent; border:none; padding:0}
+
+    /* ===== POLISH PACK (UX + DESIGN) ===== */
+
+    /* --- Global background: soft blue gradient canvas --- */
+    :root{
+      --bg-start:#edf3ff;      /* very light blue */
+      --bg-end:#e6ecfb;        /* light blue */
+      --ink:#0f172a;           /* deep slate for headings */
+      --muted-ink:#64748b;     /* improved body text */
+      --ok:#16a34a;            /* approve green */
+      --bad:#b91c1c;           /* decline red */
+    }
+    html,body{height:100%}
+    body{
+      background: radial-gradient(1400px 800px at 50% -200px, #f6f9ff 0%, transparent 60%),
+                  linear-gradient(160deg, var(--bg-start) 0%, var(--bg-end) 100%);
+      color: var(--ink);
+    }
+
+    /* --- Typography polish --- */
+    .hero-landing h1{letter-spacing:-.02em}
+    .hero-landing .lead{color:var(--muted-ink)}
+    .qtitle{letter-spacing:-.01em}
+    .muted{color:var(--muted-ink)}
+
+    /* --- Cards: more depth & softness --- */
+    .card{
+      border-radius:18px;
+      box-shadow:
+        0 2px 6px rgba(10, 30, 58, .05),
+        0 20px 40px rgba(10, 30, 58, .10);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      box-shadow:
+        0 4px 10px rgba(10, 30, 58, .06),
+        0 28px 56px rgba(10, 30, 58, .12);
+    }
+
+    /* --- Buttons: crisper, with gradient + focus rings --- */
+    .btn{
+      border-radius:12px;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .btn:active{ transform: translateY(1px) }
+    .btn:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(37,99,235,.25) }
+
+    .btn--primary{
+      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+      color:#fff; border-color:#1d4ed8;
+      box-shadow: 0 10px 24px rgba(37,99,235,.25);
+    }
+    .btn--primary:hover{ filter:brightness(0.97) }
+
+    /* Decline / Approve buttons in deck */
+    .btn--decline{
+      border-color:#f1c6c6; color:#b91c1c;
+      background:#fff; box-shadow:0 6px 14px rgba(185,28,28,.10);
+    }
+    .btn--decline:hover{ background:#fff5f5 }
+    .btn--approve{
+      background: linear-gradient(180deg,#22c55e,#16a34a);
+      border-color:#149a45; color:#fff;
+      box-shadow:0 12px 28px rgba(22,163,74,.25);
+    }
+    .btn--approve:hover{ filter:brightness(.97) }
+
+    /* --- Progress bars: thicker, round, eased --- */
+    .progress,.deck-progress{ height:10px }
+    .progress__bar,.deck-progress__bar{
+      transition: width .35s cubic-bezier(.22,.79,.22,1);
+      border-radius:999px;
+    }
+
+    /* --- Quiz option chips: tactile selection state --- */
+    .opt{
+      border-radius:14px;
+      background:#fff;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .opt:hover{ background:#f7f9ff }
+    .opt.is-selected{
+      border-color:#cbdafc;
+      background:linear-gradient(180deg,#f8fbff,#ffffff);
+      box-shadow:0 10px 24px rgba(37,99,235,.12);
+      transform: translateY(-1px);
+    }
+    .opt input{ display:none }           /* hide the tiny default input circle */
+    .opt span::before{                   /* custom bullet/check */
+      content:"";
+      display:inline-block; width:18px; height:18px; margin-right:10px;
+      border:2px solid #2563eb; border-radius:50%;
+      vertical-align:-3px;
+    }
+    .opt.is-selected span::before{ background:#2563eb; box-shadow:inset 0 0 0 3px #fff }
+
+    /* --- Deck card: denser header & KPI icons style --- */
+    .idea{ padding:20px 18px }
+    .idea .title{ font-size:26px }
+    .badge-chip, .ticker{ font-weight:700 }
+    .krow{ background:#f8fbff }
+    .krow .lbl{ display:flex; align-items:center; gap:8px }
+    .krow .lbl::before{
+      content:""; width:10px; height:10px; border-radius:3px; background:#94a3b8;
+    }
+
+    /* Sentiment bar color & value color already set; keep crisp */
+    .meter{ height:8px; border-radius:999px }
+    .meter > div{ background:#22c55e }
+
+    /* --- “Why this matches” panel --- */
+    .reason{
+      background:linear-gradient(180deg,#eef5ff,#f6f9ff);
+      border-color:#dbe6ff;
+    }
+
+    /* --- Views: smoother entrance --- */
+    .view{ opacity:0; transform: translateY(6px); transition: opacity .18s ease, transform .18s ease }
+    .view.view--active{ opacity:1; transform: translateY(0) }
+
+    /* --- Swipe animations for deck --- */
+    @keyframes swipe-right {
+      to { transform: translateX(120px) rotate(3deg); opacity:.0 }
+    }
+    @keyframes swipe-left {
+      to { transform: translateX(-120px) rotate(-3deg); opacity:.0 }
+    }
+    .card-item.swipe-right{ animation: swipe-right .22s ease forwards }
+    .card-item.swipe-left{  animation: swipe-left  .22s ease forwards }
+
+    /* --- Tiny micro-interactions --- */
+    .tag, .badge, .ticker{ transition: transform .12s ease }
+    .tag:hover, .badge:hover, .ticker:hover{ transform: translateY(-1px) }
+
+    /* Section headers */
+    .section-title{ text-align:center; font-size:32px; margin:18px 0 6px; }
+    .section-sub{ text-align:center; max-width:820px; margin:0 auto 18px; }
+
+    /* Purpose cards */
+    .purpose-card{ position:relative; overflow:hidden; }
+    .pulse-dot{
+      position:absolute; right:14px; top:14px; width:10px; height:10px; border-radius:999px;
+      background:var(--accent); box-shadow:0 0 0 0 rgba(37,99,235,.6); animation:pulse 2s infinite;
+    }
+    @keyframes pulse{ to { box-shadow:0 0 0 16px rgba(37,99,235,0) } }
+
+    /* Stats counters */
+    .stats-row{ display:flex; gap:16px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+    .stat{ background:#fff; border:1px solid var(--border); border-radius:14px; padding:12px 16px; min-width:140px; text-align:center; }
+    .stat-num{ font-size:32px; font-weight:800; line-height:1; }
+    .stat-label{ color:var(--muted-ink); font-size:12px; }
+
+    /* Logic grid */
+    .logic-grid{ display:grid; gap:18px; grid-template-columns:1fr; }
+    @media (min-width:860px){ .logic-grid{ grid-template-columns:1fr 1fr 1fr; }}
+
+    /* Weight rows */
+    .weights{ margin-top:10px; display:grid; gap:10px; }
+    .weight-row{ display:grid; grid-template-columns:140px 1fr 42px; align-items:center; gap:8px; }
+    .weight-bar{ height:10px; background:#e6eaf3; border-radius:999px; overflow:hidden; }
+    .weight-fill{ height:100%; width:0%; background:linear-gradient(180deg, var(--accent), var(--accent-600)); transition:width .6s cubic-bezier(.22,.79,.22,1); }
+
+    /* Mini allocation preview */
+    .mini-alloc{ margin-top:12px; display:grid; gap:8px; }
+    .alloc-row{ display:grid; grid-template-columns:72px 1fr 48px; align-items:center; gap:8px; }
+    .pill-code{ display:inline-block; padding:6px 10px; border-radius:999px; background:#eef3ff; color:#1d3b7a; border:1px solid #dfe7fb; font-weight:700; }
+    .alloc-bar{ height:10px; background:#e6eaf3; border-radius:999px; overflow:hidden; }
+    .alloc-fill{ height:100%; width:0%; background:linear-gradient(180deg,#22c55e,#16a34a); transition:width .8s cubic-bezier(.22,.79,.22,1); }
+
+    /* Explain chips + CTA bounce */
+    .explain-demo{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 12px; }
+    .explain-chip{ background:#f1f6ff; border:1px solid #dbe6ff; color:#0f172a; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+    .bounce-cta{ animation:float 3.6s ease-in-out infinite; }
+    @keyframes float{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-3px) } }
+
+    /* Reveal on scroll */
+    .reveal{ opacity:0; transform:translateY(10px); transition:opacity .5s ease, transform .5s ease; }
+    .reveal.on{ opacity:1; transform:translateY(0); }
+
+    
+
+  </style>
+
 </head>
 <body>
-    
-
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">Fundamental</div>
-            <ul class="nav-links">
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#analysis">Analysis</a></li>
-            </ul>
-        </div>
+  <header class="nav">
+    <div class="brand">Fundamental</div>
+    <nav class="nav__links">
+      <button data-route="landing" class="nav__link">Home</button>
+      <button data-route="quiz" class="nav__link">Start</button>
+      <button data-route="summary" class="nav__link">Summary</button>
     </nav>
+  </header>
 
-    <section class="hero">
-        <div class="container">
-            <h1 class="hero-title">AI-Powered Investment Intelligence</h1>
-            <p class="hero-subtitle">Redefining portfolio management for everyone — using AI, automation, and real-time insights</p>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">AI-Powered</span>
-                    <span class="stat-label">Analysis</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">Real-Time</span>
-                    <span class="stat-label">Market Insights</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">Personalized</span>
-                    <span class="stat-label">Portfolio Management</span>
-                </div>
-            </div>
+  <main id="app" class="container">
+    <!-- Landing -->
+    <section id="view-landing" class="view view--active">
+      <div class="hero-landing">
+        <p class="tiny muted" style="position:absolute; right:20px; top:12px;">
+          Educational demo. Not investment advice.
+        </p>
+
+        <h1>Answer a 30-second quiz.</h1>
+        <div class="accent-xl">Swipe through 10 ideas tailored to your sentiment.</div>
+        <p class="lead">
+          Turn your investing preferences into personalized recommendations with
+          our Tinder-style approach to investment decisions.
+        </p>
+        <div class="cta">
+          <button class="btn btn--primary" data-route="quiz">Start Quiz</button>
         </div>
+      </div>
+
+
+      <!-- PURPOSE -->
+      <div class="section reveal" id="purpose">
+        <h2 class="section-title">Why Fundamental Exists</h2>
+        <p class="muted section-sub">
+          Most investing tools feel either too complex or too vague. Fundamental gives you
+          a simple, explainable way to build a plan that reflects how you actually think.
+        </p>
+
+        <div class="grid grid--3 gap-lg">
+          <div class="card purpose-card">
+            <div class="pulse-dot"></div>
+            <h3>The Problem</h3>
+            <p class="muted">New investors drown in noise. “Hot picks,” black-box scores, and generic model portfolios
+              don’t align with personal preferences or risk comfort.</p>
+          </div>
+
+          <div class="card purpose-card">
+            <div class="pulse-dot"></div>
+            <h3>Our Approach</h3>
+            <p class="muted">30-second quiz → swipe 10 ideas → transparent weights you can export.
+              No APIs, no hidden models — just clear inputs and deterministic rules.</p>
+          </div>
+
+          <div class="card purpose-card">
+            <div class="pulse-dot"></div>
+            <h3>Who It’s For</h3>
+            <p class="muted">People who want a plan that mirrors their sentiment, timeline, and style —
+              without spreadsheets or guesswork.</p>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat"><div class="stat-num" data-count="30">0</div><div class="stat-label">seconds to start</div></div>
+          <div class="stat"><div class="stat-num" data-count="10">0</div><div class="stat-label">ideas to review</div></div>
+          <div class="stat"><div class="stat-num" data-count="1">0</div><div class="stat-label">exportable plan</div></div>
+        </div>
+      </div>
+
+      <!-- WHY IT WORKS (LOGIC) -->
+      <div class="section reveal" id="why-it-works" style="padding-top:10px;">
+        <h2 class="section-title">Why It Works</h2>
+        <p class="muted section-sub">
+          Each idea gets a match score from <b>transparent components</b>. Weights are proportional to that score,
+          then normalized to your amount.
+        </p>
+
+        <div class="logic-grid">
+          <!-- Deterministic Scoring -->
+          <div class="card logic-card">
+            <h3>Deterministic Scoring</h3>
+            <p class="muted">Same inputs → same outputs. Change an input and instantly see scores move.</p>
+
+            <div class="weights">
+              <div class="weight-row" data-w="35">
+                <span>Style Overlap</span>
+                <div class="weight-bar"><div class="weight-fill" style="width:0%"></div></div>
+                <span class="w-num">35%</span>
+              </div>
+              <div class="weight-row" data-w="20">
+                <span>Risk Match</span>
+                <div class="weight-bar"><div class="weight-fill" style="width:0%"></div></div>
+                <span class="w-num">20%</span>
+              </div>
+              <div class="weight-row" data-w="20">
+                <span>Horizon Fit</span>
+                <div class="weight-bar"><div class="weight-fill" style="width:0%"></div></div>
+                <span class="w-num">20%</span>
+              </div>
+              <div class="weight-row" data-w="20">
+                <span>Stance ↔ Market</span>
+                <div class="weight-bar"><div class="weight-fill" style="width:0%"></div></div>
+                <span class="w-num">20%</span>
+              </div>
+              <div class="weight-row" data-w="5">
+                <span>Base + Prefs</span>
+                <div class="weight-bar"><div class="weight-fill" style="width:0%"></div></div>
+                <span class="w-num">5%</span>
+              </div>
+            </div>
+
+            <p class="tiny muted" style="margin-top:8px;">
+              Sector preferences add a small boost; your diversification choice nudges picks to avoid clustering
+              (or to lean in if you choose “Focused”).
+            </p>
+          </div>
+
+          <!-- Score → Portfolio -->
+          <div class="card logic-card">
+            <h3>From Score → Portfolio</h3>
+            <ol class="muted bullets logic-steps">
+              <li>Rank ideas by score, applying a diversification nudge.</li>
+              <li>Normalize scores into weights (sum to 100%).</li>
+              <li>Scale by your amount and export to CSV or text.</li>
+            </ol>
+
+            <div class="mini-alloc">
+              <div class="alloc-row" data-w="38">
+                <span class="pill-code">AAPL</span>
+                <div class="alloc-bar"><div class="alloc-fill" style="width:0%"></div></div>
+                <span>38%</span>
+              </div>
+              <div class="alloc-row" data-w="27">
+                <span class="pill-code">MSFT</span>
+                <div class="alloc-bar"><div class="alloc-fill" style="width:0%"></div></div>
+                <span>27%</span>
+              </div>
+              <div class="alloc-row" data-w="20">
+                <span class="pill-code">VTI</span>
+                <div class="alloc-bar"><div class="alloc-fill" style="width:0%"></div></div>
+                <span>20%</span>
+              </div>
+              <div class="alloc-row" data-w="15">
+                <span class="pill-code">BND</span>
+                <div class="alloc-bar"><div class="alloc-fill" style="width:0%"></div></div>
+                <span>15%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Explainability -->
+          <div class="card logic-card">
+            <h3>Explainability, Built-In</h3>
+            <p class="muted">
+              Every card shows <b>“Why this matches you”</b> (style, risk, horizon, stance). Edit your quiz,
+              re-swipe, and results update instantly.
+            </p>
+            <div class="explain-demo">
+              <div class="explain-chip">Matches Growth & Quality</div>
+              <div class="explain-chip">Medium risk ↔ fit</div>
+              <div class="explain-chip">Long timeline fit</div>
+              <div class="explain-chip">Positive market backdrop</div>
+            </div>
+            <button class="btn btn--primary bounce-cta" data-route="quiz">Try It Now</button>
+          </div>
+        </div>
+      </div>
+
+
+
+        <div class="logic-grid">
+          <div class="card logic-card">
+            <h3>Deterministic Scoring</h3>
+            <p class="muted">No randomness. Same inputs → same outputs. You can change any input and instantly see how scores move.</p>
+            <div class="weights">
+              <div class="weight-row">
+                <span>Style Overlap</span><div class="weight-bar" data-w="35"></div><span class="w-num">35%</span>
+              </div>
+              <div class="weight-row">
+                <span>Risk Match</span><div class="weight-bar" data-w="20"></div><span class="w-num">20%</span>
+              </div>
+              <div class="weight-row">
+                <span>Horizon Fit</span><div class="weight-bar" data-w="20"></div><span class="w-num">20%</span>
+              </div>
+              <div class="weight-row">
+                <span>Stance ↔ Market</span><div class="weight-bar" data-w="20"></div><span class="w-num">20%</span>
+              </div>
+              <div class="weight-row">
+                <span>Base + Prefs</span><div class="weight-bar" data-w="5"></div><span class="w-num">5%</span>
+              </div>
+            </div>
+            <p class="tiny muted" style="margin-top:8px;">Sector preferences can add a small boost; diversification choice
+              adjusts picks to avoid over-clustering (or to lean in if you choose “Focused”).</p>
+          </div>
+
+          <div class="card logic-card">
+            <h3>From Score → Portfolio</h3>
+            <ol class="muted bullets logic-steps">
+              <li>Build top ideas by score, applying a diversification nudge.</li>
+              <li>Normalize scores into weights (sum to 100%).</li>
+              <li>Scale by your amount and export to CSV or text.</li>
+            </ol>
+            <div class="mini-alloc">
+              <div class="alloc-row"><span class="pill-code">AAPL</span><div class="alloc-bar" style="--w:38%"></div><span>38%</span></div>
+              <div class="alloc-row"><span class="pill-code">MSFT</span><div class="alloc-bar" style="--w:27%"></div><span>27%</span></div>
+              <div class="alloc-row"><span class="pill-code">VTI</span><div class="alloc-bar" style="--w:20%"></div><span>20%</span></div>
+              <div class="alloc-row"><span class="pill-code">BND</span><div class="alloc-bar" style="--w:15%"></div><span>15%</span></div>
+            </div>
+          </div>
+
+          <div class="card logic-card">
+            <h3>Explainability, Built-In</h3>
+            <p class="muted">Every card shows <b>“Why this matches you”</b> (style, risk, horizon, stance). Edit your quiz,
+              re-swipe, and the results update instantly. That’s transparency you can trust.</p>
+            <div class="explain-demo">
+              <div class="explain-chip">Matches Growth & Quality</div>
+              <div class="explain-chip">Medium risk ↔ fit</div>
+              <div class="explain-chip">Long timeline fit</div>
+              <div class="explain-chip">Positive market backdrop</div>
+            </div>
+            <button class="btn btn--primary bounce-cta" data-route="quiz">Try It Now</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Final CTA -->
+      <div class="section">
+        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+          <div>
+            <h2 style="margin:0;">Ready to build your Fundamental?</h2>
+            <p class="muted" style="margin:.25rem 0 0">Start now — it’s fast and fun.</p>
+          </div>
+          <div>
+            <button class="btn btn--primary" data-route="quiz">Start Quiz</button>
+            <button class="btn" data-route="explore">Explore Companies</button>
+          </div>
+        </div>
+      </div>
+
+      </section>
+
+    <!-- Quiz -->
+    <section id="view-quiz" class="view">
+    <form id="quiz-form" class="quiz-shell" novalidate>
+      <div class="quiz-top">
+        <div class="progress"><div id="progress-bar" class="progress__bar" style="width:14%"></div></div>
+        <div id="progress-text" class="progress__text">Step 1 of 7</div>
+      </div>
+
+      <div class="qcard">
+        <div class="quiz-steps">
+          <!-- Step 1: Risk -->
+          <fieldset class="step step--active" data-step="1">
+            <legend class="qtitle">What’s your risk comfort?</legend>
+            <div class="optlist">
+              <label class="opt"><input type="radio" name="risk" value="Low" required><span>Low</span></label>
+              <label class="opt"><input type="radio" name="risk" value="Medium"><span>Medium</span></label>
+              <label class="opt"><input type="radio" name="risk" value="High"><span>High</span></label>
+            </div>
+          </fieldset>
+
+          <!-- Step 2: Horizon -->
+          <fieldset class="step" data-step="2">
+            <legend class="qtitle">What’s your investment timeline?</legend>
+            <div class="optlist">
+              <label class="opt"><input type="radio" name="horizon" value="Short" required><span>Short</span></label>
+              <label class="opt"><input type="radio" name="horizon" value="Medium"><span>Medium</span></label>
+              <label class="opt"><input type="radio" name="horizon" value="Long"><span>Long</span></label>
+            </div>
+          </fieldset>
+
+          <!-- Step 3: Styles -->
+          <fieldset class="step" data-step="3">
+            <legend class="qtitle">Pick up to two styles</legend>
+            <div class="optlist optlist--grid">
+              <label class="opt opt--pill"><input type="checkbox" name="styles" value="Growth"><span>Growth</span></label>
+              <label class="opt opt--pill"><input type="checkbox" name="styles" value="Quality"><span>Quality</span></label>
+              <label class="opt opt--pill"><input type="checkbox" name="styles" value="Value"><span>Value</span></label>
+              <label class="opt opt--pill"><input type="checkbox" name="styles" value="Dividend"><span>Dividend</span></label>
+              <label class="opt opt--pill"><input type="checkbox" name="styles" value="Momentum"><span>Momentum</span></label>
+              <label class="opt opt--pill"><input type="checkbox" name="styles" value="Defensive"><span>Defensive</span></label>
+            </div>
+            <div class="hintline">You can only select two.</div>
+          </fieldset>
+
+          <!-- Step 4: Sentiment stance -->
+          <fieldset class="step" data-step="4">
+            <legend class="qtitle">How do you feel about markets right now?</legend>
+            <div class="optlist">
+              <label class="opt"><input type="radio" name="stance" value="Cautious" required><span>Cautious</span></label>
+              <label class="opt"><input type="radio" name="stance" value="Neutral"><span>Neutral</span></label>
+              <label class="opt"><input type="radio" name="stance" value="Optimistic"><span>Optimistic</span></label>
+            </div>
+          </fieldset>
+
+          <!-- Step 5: Amount -->
+          <fieldset class="step" data-step="5">
+            <legend class="qtitle">Roughly how much will you invest?</legend>
+            <div class="amountrow">
+              <input type="range" id="amount" min="100" max="10000" step="50" value="1000" />
+              <span id="amount-val" class="amountbadge">$1,000</span>
+            </div>
+          </fieldset>
+
+          <!-- Step 6: Diversification & sector prefs -->
+          <fieldset class="step" data-step="6">
+            <legend class="qtitle">Diversified or focused? (optional: sectors)</legend>
+            <div class="optlist optlist--row">
+              <label class="opt opt--pill"><input type="radio" name="diversification" value="Diversified" required><span>Diversified</span></label>
+              <label class="opt opt--pill"><input type="radio" name="diversification" value="Focused"><span>Focused</span></label>
+            </div>
+          </fieldset>
+
+          <!-- Step 7: Sector prefs -->
+          <fieldset class="step" data-step="7">
+            <legend class="qtitle">Choose preferred sectors (optional)</legend>
+            <details class="sectors" open>
+              <summary>Tap to expand sector options</summary>
+              <div id="sector-checkboxes" class="optlist optlist--grid"></div>
+            </details>
+            <p class="hintline">You can skip this — it’s optional.</p>
+          </fieldset>
+
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn--ghost" id="btn-prev" aria-label="Previous question">← Previous</button>
+          <button type="button" class="btn btn--primary" id="btn-next" aria-label="Next question">Next →</button>
+          <button type="submit" class="btn btn--primary" id="btn-finish" style="display:none">Build My Fundamental</button>
+        </div>
+      </div>
+    </form>
+
+  </section>
+
+
+
+    <!-- Explore -->
+    <section id="view-explore" class="view">
+      <div class="card">
+        <h2>Explore Companies</h2>
+        <div class="row gap wrap">
+          <input id="search" class="input" placeholder="Search by name or ticker…"/>
+          <select id="sector-filter" class="input"><option value="">All Sectors</option></select>
+        </div>
+        <div class="table-wrap mt12">
+          <table class="table" id="explore-table">
+            <thead><tr><th>Company</th><th>Ticker</th><th>Type</th><th>Sector</th><th>Styles</th><th>Recent Focus</th></tr></thead>
+            <tbody id="explore-tbody"></tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
-    <main class="container">
-        <section class="section" id="dashboard">
-            <h2 class="section-title">Market Dashboard</h2>
-            <div class="dashboard">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Market Insights</h3>
-                        <i class="fas fa-lightbulb card-icon"></i>
-                    </div>
-                    <div class="market-insights">
-                        <div id="marketInsights">
-                            <!-- AI-generated market insights -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Market Sentiment</h3>
-                        <i class="fas fa-brain card-icon"></i>
-                    </div>
-                    <div class="sentiment-indicator">
-                        <div class="sentiment-item">
-                            <div class="sentiment-score bullish" id="bullishSentiment">72%</div>
-                            <div class="sentiment-label">Bullish</div>
-                        </div>
-                        <div class="sentiment-item">
-                            <div class="sentiment-score neutral" id="neutralSentiment">18%</div>
-                            <div class="sentiment-label">Neutral</div>
-                        </div>
-                        <div class="sentiment-item">
-                            <div class="sentiment-score bearish" id="bearishSentiment">10%</div>
-                            <div class="sentiment-label">Bearish</div>
-                        </div>
-                    </div>
-                    <div class="ai-analysis">
-                        <div class="ai-analysis-header">
-                            <i class="fas fa-robot ai-icon"></i>
-                            <h4 class="ai-title">AI Market Analysis</h4>
-                        </div>
-                        <p id="aiMarketAnalysis">Analyzing current market conditions and sentiment...</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="news-feed">
-                <div class="card-header">
-                    <h3 class="card-title">Financial News & Analysis</h3>
-                    <i class="fas fa-newspaper card-icon"></i>
-                </div>
-                <div id="newsFeed">
-                    <!-- News items will be populated here -->
-                </div>
-            </div>
-        </section>
-
-        <section class="section" id="portfolio">
-            <h2 class="section-title">Portfolio Builder</h2>
-            <div class="portfolio-form">
-                <div class="tabs">
-                    <button class="tab active" onclick="switchTab('basic')">Basic Setup</button>
-                    <button class="tab" onclick="switchTab('advanced')">Advanced Options</button>
-                    <button class="tab" onclick="switchTab('ai-recommendations')">AI Recommendations</button>
-                </div>
-
-                <div class="tab-content active" id="basic">
-                    <div class="form-group">
-                        <label class="form-label">Investment Amount (USD)</label>
-                        <input type="number" class="form-input" id="investmentAmount" min="1000" placeholder="Enter amount (minimum $1,000)" value="10000">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Investment Goals</label>
-                        <select class="form-select" id="investmentGoals">
-                            <option value="growth">Growth - Maximize returns</option>
-                            <option value="income">Income - Generate dividends</option>
-                            <option value="balanced">Balanced - Growth and income</option>
-                            <option value="conservative">Conservative - Capital preservation</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Risk Tolerance</label>
-                        <input type="range" class="risk-slider" id="riskTolerance" min="1" max="10" value="5">
-                        <div class="risk-display" id="riskDisplay">Moderate Risk (5/10)</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Time Horizon</label>
-                        <select class="form-select" id="timeHorizon">
-                            <option value="short">Short-term (1-3 years)</option>
-                            <option value="medium">Medium-term (3-7 years)</option>
-                            <option value="long">Long-term (7+ years)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Preferred Sectors</label>
-                        <div class="sector-grid" id="sectorGrid">
-                            <button type="button" class="sector-btn" data-sector="technology">Technology</button>
-                            <button type="button" class="sector-btn" data-sector="healthcare">Healthcare</button>
-                            <button type="button" class="sector-btn" data-sector="finance">Finance</button>
-                            <button type="button" class="sector-btn" data-sector="energy">Energy</button>
-                            <button type="button" class="sector-btn" data-sector="consumer">Consumer Goods</button>
-                            <button type="button" class="sector-btn" data-sector="utilities">Utilities</button>
-                            <button type="button" class="sector-btn" data-sector="materials">Materials</button>
-                            <button type="button" class="sector-btn" data-sector="realestate">Real Estate</button>
-                            <button type="button" class="sector-btn" data-sector="crypto">Cryptocurrency</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="advanced">
-                    <div class="form-group">
-                        <label class="form-label">Market Sentiment</label>
-                        <select class="form-select" id="marketSentimentOverride">
-                            <option value="auto">Auto-detect from AI analysis</option>
-                            <option value="bullish">Bullish - Expecting growth</option>
-                            <option value="bearish">Bearish - Expecting decline</option>
-                            <option value="neutral">Neutral - Uncertain outlook</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Rebalancing Frequency</label>
-                        <select class="form-select" id="rebalancingFreq">
-                            <option value="monthly">Monthly</option>
-                            <option value="quarterly">Quarterly</option>
-                            <option value="annually">Annually</option>
-                            <option value="manual">Manual only</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">ESG Preferences</label>
-                        <select class="form-select" id="esgPreferences">
-                            <option value="none">No preference</option>
-                            <option value="moderate">Moderate ESG focus</option>
-                            <option value="high">High ESG focus</option>
-                            <option value="exclusion">Exclude controversial sectors</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">International Exposure</label>
-                        <input type="range" class="risk-slider" id="internationalExposure" min="0" max="50" value="20">
-                        <div class="risk-display" id="internationalDisplay">20% International</div>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="ai-recommendations">
-                    <div class="ai-analysis">
-                        <div class="ai-analysis-header">
-                            <i class="fas fa-robot ai-icon"></i>
-                            <h4 class="ai-title">AI Portfolio Recommendations</h4>
-                        </div>
-                        <p id="aiRecommendations">Click "Generate AI Recommendations" to get personalized suggestions based on current market conditions and your profile.</p>
-                        <button class="btn-secondary" onclick="generateAIRecommendations()">Generate AI Recommendations</button>
-                    </div>
-                </div>
-
-                <button class="btn-primary" onclick="generatePortfolio()" id="generatePortfolioBtn">
-                    <i class="fas fa-magic"></i> Generate Optimized Portfolio
-                </button>
-            </div>
-
-            <div class="portfolio-result hidden" id="portfolioResult">
-                <h3 class="card-title">Your Optimized Portfolio</h3>
-                <div class="allocation-chart" id="allocationChart">
-                    <!-- Portfolio allocations will be displayed here -->
-                </div>
-                
-                <div class="risk-metrics" id="riskMetrics">
-                    <!-- Risk metrics will be displayed here -->
-                </div>
-
-                <div class="ai-analysis">
-                    <div class="ai-analysis-header">
-                        <i class="fas fa-robot ai-icon"></i>
-                        <h4 class="ai-title">AI Portfolio Analysis</h4>
-                    </div>
-                    <p id="aiPortfolioAnalysis">Analyzing your portfolio composition and risk profile...</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section" id="analysis">
-            <h2 class="section-title">Advanced Analysis</h2>
-            
-            <div class="performance-chart">
-                <div class="card-header">
-                    <h3 class="card-title">Portfolio Performance Projection</h3>
-                    <i class="fas fa-chart-area card-icon"></i>
-                </div>
-                <div class="chart-container">
-                    <canvas id="performanceChart"></canvas>
-                </div>
-                <div class="export-options">
-                    <h4 style="color: var(--primary-gold); margin-bottom: 1rem;">Export Options</h4>
-                    <div class="export-buttons">
-                        <button class="btn-secondary" onclick="exportToPDF()">
-                            <i class="fas fa-file-pdf"></i> Export to PDF
-                        </button>
-                        <button class="btn-secondary" onclick="exportToExcel()">
-                            <i class="fas fa-file-excel"></i> Export to Excel
-                        </button>
-                        <button class="btn-secondary" onclick="exportToCSV()">
-                            <i class="fas fa-file-csv"></i> Export to CSV
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="backtesting-results">
-                <div class="card-header">
-                    <h3 class="card-title">Backtesting Results</h3>
-                    <i class="fas fa-history card-icon"></i>
-                </div>
-                <div class="backtest-summary" id="backtestSummary">
-                    <!-- Backtesting results will be displayed here -->
-                </div>
-                <button class="btn-secondary" onclick="runBacktest()">
-                    <i class="fas fa-play"></i> Run Historical Backtest
-                </button>
-            </div>
-
-            <div class="rebalancing-suggestions">
-                <div class="card-header">
-                    <h3 class="card-title">Rebalancing Suggestions</h3>
-                    <i class="fas fa-balance-scale card-icon"></i>
-                </div>
-                <div id="rebalancingSuggestions">
-                    <!-- Rebalancing suggestions will be displayed here -->
-                </div>
-            </div>
-        </section>
-    </main>
-
-    
-
-<div class="modal" id="portfolioModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Portfolio Details</h3>
-                <button class="modal-close" onclick="closeModal('portfolioModal')">&times;</button>
-            </div>
-            <div id="portfolioModalContent">
-                <!-- Detailed portfolio information will be displayed here -->
-            </div>
+    <!-- Deck -->
+    <!-- Deck -->
+    <section id="view-deck" class="view">
+      <div class="card deck-shell">
+        <div class="deck-top">
+          <div class="deck-progress">
+            <div id="deck-progress-bar" class="deck-progress__bar" style="width:0%"></div>
+          </div>
+          <div id="deck-counts" class="deck-counts">0 approved • 0 declined</div>
         </div>
-    </div>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Fundamental</h3>
-                    <p>AI-powered investment platform providing intelligent portfolio management and market analysis.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Features</h3>
-                    <a href="#portfolio">Portfolio Builder</a>
-                    <a href="#analysis">Market Analysis</a>
-                    <a href="#dashboard">Live Data</a>
-                </div>
-                <div class="footer-section">
-                    <h3>Resources</h3>
-                    <a href="#education">Investment Education</a>
-                    <a href="#research">Market Research</a>
-                    <a href="#tools">Financial Tools</a>
-                </div>
-            </div>
-            <p>&copy; 2024 Fundamental. All rights reserved. | Investment advice powered by AI</p>
+        <div class="stack-wrap">
+          <div id="deck" class="stack"></div>
         </div>
-    </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="script.js"></script>
+        <div class="deck-actions">
+          <button id="btn-decline" class="btn btn--decline">
+            <span>✖</span> Decline
+          </button>
+          <button id="btn-approve" class="btn btn--approve">
+            <span>✓</span> Approve
+          </button>
+        </div>
+
+        <div class="muted tiny" style="text-align:center; margin-top:6px;">
+          Tip: use ← Decline • → Approve
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Summary -->
+    <section id="view-summary" class="view">
+      <div class="card">
+        <h2>Your Fundamental</h2>
+        <p class="muted">Approved picks below. Weights are proportional to match score and scaled to your amount.</p>
+        <div id="summary-list" class="grid grid--2 mt12"></div>
+        <div class="row gap mt16">
+          <button id="btn-export" class="btn">Export CSV</button>
+          <button id="btn-copy" class="btn">Copy Summary</button>
+          <button id="btn-reset" class="btn">Start Over</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">© <span id="year"></span> Fundamental. Educational demo. Not investment advice.</footer>
+
+<script>
+/* ---------- UTIL ---------- */
+const $  = (s, c=document)=>c.querySelector(s);
+const $$ = (s, c=document)=>Array.from(c.querySelectorAll(s));
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+const toCurrency=n=>"$"+Number(n).toLocaleString();
+function navigate(route){
+  $$(".view").forEach(v=>v.classList.remove("view--active"));
+  $("#view-"+route)?.classList.add("view--active");
+  $$(".nav__link").forEach(b=>b.classList.toggle("btn--primary", b.dataset.route===route));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ---------- DATASET (qualitative) ---------- */
+const IDEAS=[ /* shortened here for brevity in this reply — use the full IDEAS array I gave earlier */
+  {id:"AAPL",name:"Apple Inc.",type:"stock",sector:"Technology",style_tags:["Quality","Growth"],risk:"Medium",horizon_fit:["Medium","Long"],sentiment:{market:"positive",trend:"stable"},focus:["Ecosystem lock-in","Services expansion","Device refresh cycle"]},
+  {id:"MSFT",name:"Microsoft Corp.",type:"stock",sector:"Technology",style_tags:["Quality","Growth"],risk:"Low",horizon_fit:["Medium","Long"],sentiment:{market:"positive",trend:"rising"},focus:["Cloud leadership","AI in enterprise","Operating discipline"]},
+  {id:"GOOGL",name:"Alphabet Inc.",type:"stock",sector:"Communication Services",style_tags:["Quality","Growth"],risk:"Medium",horizon_fit:["Medium","Long"],sentiment:{market:"positive",trend:"rising"},focus:["Ads stabilization","Cloud efficiency","AI rollout"]},
+  {id:"NVDA",name:"NVIDIA Corp.",type:"stock",sector:"Technology",style_tags:["Growth","Momentum"],risk:"High",horizon_fit:["Medium","Long"],sentiment:{market:"positive",trend:"rising"},focus:["Datacenter demand","AI infrastructure","Supply"]},
+  {id:"AMZN",name:"Amazon.com Inc.",type:"stock",sector:"Consumer Discretionary",style_tags:["Growth","Quality"],risk:"Medium",horizon_fit:["Medium","Long"],sentiment:{market:"positive",trend:"rising"},focus:["Retail margin recovery","AWS demand","Logistics leverage"]},
+  {id:"TSLA",name:"Tesla, Inc.",type:"stock",sector:"Consumer Discretionary",style_tags:["Growth","Momentum"],risk:"High",horizon_fit:["Medium","Long"],sentiment:{market:"neutral",trend:"rising"},focus:["Pricing","Energy storage","Autonomy roadmap"]},
+  {id:"JPM",name:"JPMorgan Chase",type:"stock",sector:"Financials",style_tags:["Quality","Dividend"],risk:"Low",horizon_fit:["Short","Medium","Long"],sentiment:{market:"positive",trend:"stable"},focus:["NII durability","Credit normalization","Capital levels"]},
+  {id:"UNH",name:"UnitedHealth Group",type:"stock",sector:"Health Care",style_tags:["Quality","Defensive"],risk:"Low",horizon_fit:["Medium","Long"],sentiment:{market:"neutral",trend:"stable"},focus:["Managed care","Regulatory backdrop","Services mix"]},
+  {id:"XOM",name:"Exxon Mobil",type:"stock",sector:"Energy",style_tags:["Dividend","Value"],risk:"Medium",horizon_fit:["Medium","Long"],sentiment:{market:"neutral",trend:"stable"},focus:["Capital discipline","Project pipeline","Commodity mix"]},
+  {id:"VTI",name:"Vanguard Total Stock Market ETF",type:"etf",sector:"Multi",style_tags:["Quality","Growth","Value"],risk:"Low",horizon_fit:["Medium","Long"],sentiment:{market:"positive",trend:"rising"},focus:["Broad exposure","Low cost","Diversification"]},
+  {id:"BND",name:"Vanguard Total Bond Market ETF",type:"bond",sector:"Bonds",style_tags:["Defensive","Income"],risk:"Low",horizon_fit:["Short","Medium","Long"],sentiment:{market:"neutral",trend:"rising"},focus:["Diversified bonds","Rate exposure","Core ballast"]},
+  {id:"GLD",name:"SPDR Gold Shares",type:"commodity",sector:"Commodities",style_tags:["Defensive"],risk:"Medium",horizon_fit:["Short","Medium","Long"],sentiment:{market:"neutral",trend:"rising"},focus:["Store of value","Hedge","Dollar sensitivity"]}
+];
+const ALL_SECTORS=[...new Set(IDEAS.map(x=>x.sector))].concat(["Real Estate","Materials","Utilities","Financials"]);
+/* ---------- SCORING ---------- */
+let userProfile=null, recs=[], approvals=[], declines=[], currentIndex=0;
+const stanceWeight=(stance,sent)=>{
+  const map={positive:0.7,neutral:0.5,negative:0.3};
+  const trend={rising:0.7,stable:0.5,falling:0.3};
+  const s=map[sent.market]??0.5, t=trend[sent.trend]??0.5;
+  if(stance==="Cautious") return (0.5*(1-Math.abs(s-0.5))+0.5*(1-Math.abs(t-0.5)));
+  if(stance==="Optimistic")return (0.6*s+0.4*t);
+  return (0.5*s+0.5*(1-Math.abs(t-0.5))+0.1);
+};
+const styleOverlap=(user,idea)=>{
+  if(!user||!user.length) return 0.4;
+  const set=new Set(idea); const common=user.filter(s=>set.has(s)).length;
+  const denom=new Set([...user,...idea]).size||1; return common/denom;
+};
+const riskMatch=(u,i)=>{const order=["Low","Medium","High"];const a=order.indexOf(u),b=order.indexOf(i);if(a<0||b<0)return 0.5;const d=Math.abs(a-b);return d===0?1:d===1?0.6:0.2;}
+const horizonMatch=(u,arr)=>arr.includes(u)?1:0.5;
+function diversificationPenalty(selected,cand,pref){
+  if(!selected.length)return 0; const count={}; selected.forEach(x=>count[x.sector]=(count[x.sector]||0)+1);
+  const top=Math.max(...Object.values(count));
+  if(pref==="Focused"){const common=Object.entries(count).sort((a,b)=>b[1]-a[1])[0]?.[0]; return cand.sector===common?0.05:0;}
+  const c=count[cand.sector]||0; return c>=top? -0.08:0.03;
+}
+function sectorPreferenceBoost(pref,cand){ if(!pref||!pref.length)return 0; return pref.includes(cand.sector)?0.05:0; }
+function buildRecommendations(profile, ideas, topN=10){
+  const scored=ideas.map(idea=>{
+    const sStyle=styleOverlap(profile.styles, idea.style_tags);
+    const sRisk=riskMatch(profile.risk, idea.risk);
+    const sH=horizonMatch(profile.horizon, idea.horizon_fit);
+    const sSent=stanceWeight(profile.stance, idea.sentiment);
+    const sPref=sectorPreferenceBoost(profile.preferSectors, idea);
+    const base=0.35*sStyle+0.2*sRisk+0.2*sH+0.2*sSent+0.05+sPref;
+    return {...idea,score:base};
+  }).sort((a,b)=>b.score-a.score);
+  const picked=[];
+  for(const c of scored){ const adj=c.score+diversificationPenalty(picked,c,profile.diversification); picked.push({...c,score:adj}); if(picked.length>=topN)break; }
+  return picked.sort((a,b)=>b.score-a.score);
+}
+
+/* ---------- DECK ---------- */
+  function cardHTML(item, idx, total){
+    const styleChips   = (item.style_tags||[]).map(t=>`<span class="badge-pill">${t}</span>`).join("");
+    const typeBadge    = `<span class="badge-chip">${item.sector}</span> <span class="badge-chip">${(item.type||"STOCK").toUpperCase()}</span>`;
+    const tickerBadge  = `<span class="ticker">${item.id || ""}</span>`;
+    const sentiMap     = {positive: 15, neutral: 0, negative: -10};
+    const sentiPct     = (sentiMap[item.sentiment?.market] ?? 0);
+    const sentiWidth   = Math.max(0, Math.min(100, 50 + sentiPct)); // center-ish bar
+    const sentiClass   = sentiPct >= 0 ? "val" : "val neg";
+    const yieldText    = (item.style_tags||[]).includes("Dividend") ? "≈2–4%" : "—";
+    const focusLines   = (item.focus||[]).slice(0,3).map(f=>`<li>${f}</li>`).join("");
+    const matchScore   = item.score ? Math.round(item.score*100) : 60;
+
+    return `
+      <div class="card-item" data-id="${item.id}" style="z-index:${100-idx}">
+        <div class="idea">
+          <div class="hdr">
+            <div>
+              <h3 class="title">${item.name}</h3>
+              <div class="badges">${typeBadge} ${styleChips}</div>
+            </div>
+            ${tickerBadge}
+          </div>
+
+          <div class="kpis">
+            <div class="krow">
+              <div>
+                <div class="lbl">Market Sentiment</div>
+                <div class="meter"><div style="width:${sentiWidth}%"></div></div>
+              </div>
+              <div class="${sentiClass}">${sentiPct>0?'+':''}${sentiPct.toFixed(1)}%</div>
+            </div>
+            <div class="krow">
+              <div class="lbl">Dividend Yield</div>
+              <div class="val">${yieldText}</div>
+            </div>
+          </div>
+
+          <ul class="bullets">
+            ${focusLines}
+          </ul>
+
+          <div class="reason">
+            <b>Why this matches you:</b>
+            <div>${explainMatch(item)}</div>
+            <div class="subtle">Match Score: ${matchScore}/100</div>
+          </div>
+        </div>
+      </div>
+    `
+  };
+
+  // Explain "why this matches" line used in the card
+  function explainMatch(item){
+    const bits = [];
+    if (userProfile?.styles?.length){
+      const overlap = userProfile.styles.filter(s => (item.style_tags||[]).includes(s));
+      if (overlap.length) bits.push(`Matches ${overlap.join(' & ')} style`);
+    }
+    if (userProfile?.risk){
+      const txt = `${item.risk} risk fits your ${userProfile.risk.toLowerCase()} preference`;
+      bits.push(txt);
+    }
+    if (userProfile?.horizon && (item.horizon_fit||[]).includes(userProfile.horizon)){
+      bits.push(`${userProfile.horizon} timeline fit`);
+    }
+    if (userProfile?.stance){
+      const m=item.sentiment?.market||'neutral';
+      bits.push(`${m.charAt(0).toUpperCase()+m.slice(1)} market backdrop`);
+    }
+    return bits.length ? bits.join('; ') : "Balanced profile and complementary exposure.";
+  }
+
+  // One-at-a-time card stack helpers
+  function renderDeck(){
+    const deck = $("#deck");
+    deck.innerHTML = recs.length ? cardHTML(recs[0],0,recs.length) : "";
+    currentIndex = 0;
+    approvals = [];
+    declines = [];
+    updateDeckProgress();
+  }
+
+  function currentCard(){ return $("#deck .card-item"); }
+
+  function shiftCard(){
+    currentIndex++;
+    if (currentIndex >= recs.length){
+      navigate("summary");
+      renderSummary();
+      return false;
+    }
+    const deck = $("#deck");
+    deck.innerHTML = cardHTML(recs[currentIndex], currentIndex, recs.length);
+    updateDeckProgress();
+    return true;
+  }
+
+
+  // Deck header: progress bar + counts
+  function updateDeckProgress(){
+    const done  = approvals.length + declines.length;
+    const total = recs.length || 10;
+    const pct   = Math.round((done/total)*100);
+    const bar   = $("#deck-progress-bar");
+    const text  = $("#deck-counts");
+    if (bar)  bar.style.width = pct + "%";
+    if (text) text.textContent = `${approvals.length} approved • ${declines.length} declined`;
+  }
+
+
+/* ---------- SUMMARY ---------- */
+function renderSummary(){
+  const container=$("#summary-list");
+  if(!approvals.length){ container.innerHTML=`<div class="card"><p class="muted">No picks approved yet. Try again!</p></div>`; return; }
+  const amt=userProfile.amount||1000;
+  const totalScore=approvals.reduce((s,x)=>s+x.score,0)||1;
+  const rows=approvals.map(x=>{ const w=x.score/totalScore; return {...x,weightPct:w,alloc:w*amt}; }).sort((a,b)=>b.weightPct-a.weightPct);
+  container.innerHTML=rows.map(x=>`
+    <div class="card">
+      <div class="row between"><h3>${x.name} <span class="badge">${x.id}</span></h3><span class="badge">${x.sector} • ${x.type.toUpperCase()}</span></div>
+      <p class="muted">Match: ${(x.score*100).toFixed(0)} • Suggested weight: ${(x.weightPct*100).toFixed(1)}% (${toCurrency(x.alloc.toFixed(0))})</p>
+      <div class="tags">${x.style_tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+    </div>`).join("");
+  $("#btn-export").onclick=()=>exportCSV(rows);
+  $("#btn-copy").onclick=()=>copySummary(rows);
+}
+function exportCSV(rows){
+  const header=["id","name","type","sector","match_score","weight_pct","suggested_amount","styles","notes"];
+  const lines=[header.join(",")];
+  rows.forEach(r=>{
+    const styles=`"${r.style_tags.join(" ")}"`;
+    const notes=`"${(r.focus||[]).slice(0,2).join(" • ")}"`;
+    lines.push([r.id,r.name,r.type,r.sector,(r.score*100).toFixed(0),(r.weightPct*100).toFixed(1),Math.round(r.alloc),styles,notes].join(","));
+  });
+  const blob=new Blob([lines.join("\n")],{type:"text/csv"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="fundamental-recommendations.csv"; a.click(); URL.revokeObjectURL(a.href);
+}
+function copySummary(rows){
+  const amt=userProfile.amount||1000;
+  const lines=[`Your Fundamental — Amount: ${toCurrency(amt)}`];
+  rows.forEach(r=>lines.push(`• ${r.name} (${r.id}) — ${(r.weightPct*100).toFixed(1)}% — Styles: ${r.style_tags.join("/")}`));
+  navigator.clipboard.writeText(lines.join("\n")).then(()=>alert("Summary copied."));
+}
+
+/* ---------- EXPLORE ---------- */
+function populateExplore(){
+  const sectors=[...new Set(IDEAS.map(x=>x.sector))].sort();
+  const sel=$("#sector-filter"); sectors.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;sel.appendChild(o);});
+  const sectorBox=$("#sector-checkboxes");
+  ALL_SECTORS.forEach(s=>{ const lbl=document.createElement("label"); lbl.className="pill"; lbl.innerHTML=`<input type="checkbox" name="preferSectors" value="${s}"> ${s}`; sectorBox.appendChild(lbl);});
+  function draw(){
+    const term=$("#search").value.toLowerCase(); const sec=sel.value;
+    const filtered=IDEAS.filter(x=>{
+      const t=x.name.toLowerCase().includes(term)||(x.id||"").toLowerCase().includes(term);
+      return t && (!sec || x.sector===sec);
+    });
+    $("#explore-tbody").innerHTML=filtered.map(x=>`
+      <tr><td>${x.name}</td><td>${x.id||""}</td><td>${x.type.toUpperCase()}</td><td>${x.sector}</td><td>${x.style_tags.join(", ")}</td><td>${(x.focus||[]).slice(0,2).join(" • ")}</td></tr>
+    `).join("");
+  }
+  $("#search").oninput=draw; sel.onchange=draw; draw();
+}
+
+/* ---------- QUIZ ---------- */
+  function initQuiz(){
+    const form   = $("#quiz-form");
+    if (!form) return;
+
+    const steps  = $$(".step", form);
+    const bar    = $("#progress-bar");
+    const ptext  = $("#progress-text");
+    const btnPrev= $("#btn-prev");
+    const btnNext= $("#btn-next");
+    const btnDone= $("#btn-finish");
+    const total  = steps.length;
+    let index    = 0;
+
+    // sector checkboxes
+    const sectorBox = $("#sector-checkboxes");
+    if (sectorBox && !sectorBox.children.length) {
+      const sectors = Array.from(new Set(IDEAS.map(x=>x.sector))).concat(["Bonds","Commodities"]);
+      sectors.forEach(s=>{
+        const lbl=document.createElement("label");
+        lbl.className="opt opt--pill";
+        lbl.innerHTML=`<input type="checkbox" name="preferSectors" value="${s}"><span>${s}</span>`;
+        sectorBox.appendChild(lbl);
+      });
+    }
+
+    // amount display
+    const range=$("#amount"), out=$("#amount-val");
+    if (range && out) {
+      const fmt=v=>"$"+Number(v).toLocaleString();
+      out.textContent=fmt(range.value); range.oninput=()=>out.textContent=fmt(range.value);
+    }
+
+    // limit style picks to 2 + toggle .is-selected on labels
+    form.addEventListener("change",(e)=>{
+      if (e.target.name === "styles") {
+        const picks=$$('input[name="styles"]:checked',form);
+        if (picks.length>2){ e.target.checked=false; alert("Pick up to 2 styles."); }
+      }
+
+      // toggle .is-selected for radios & checkboxes
+      if (e.target.matches('input[type="radio"], input[type="checkbox"]')) {
+        const name = e.target.name;
+        // for radios: clear others
+        if (e.target.type === "radio") {
+          $$(`input[name="${name}"]`, form).forEach(inp=>{
+            const lbl = inp.closest('.opt');
+            if (lbl) lbl.classList.toggle('is-selected', inp.checked);
+          });
+        } else {
+          // for checkboxes: just toggle this one
+          const lbl = e.target.closest('.opt');
+          if (lbl) lbl.classList.toggle('is-selected', e.target.checked);
+        }
+      }
+    });
+
+
+    function show(i){
+      steps.forEach(s=>s.classList.remove("step--active"));
+      steps[i].classList.add("step--active");
+      const pct = Math.round(((i+1)/total)*100);
+      if (bar)   bar.style.width = pct + "%";
+      if (ptext) ptext.textContent = `Step ${i+1} of ${total}`;
+      // buttons
+      btnPrev.disabled = i===0;
+      const last = i === total-1;
+      btnNext.style.display = last ? "none" : "";
+      btnDone.style.display = last ? "" : "none";
+      // focus first input for accessibility
+      const firstInput = $$("input", steps[i])[0];
+      if (firstInput) firstInput.focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function validCurrent(){
+      const current = steps[index];
+      const required = $$("input[required]", current);
+      for (const el of required){
+        if (el.type === "radio"){
+          if ($$(`input[name="${el.name}"]:checked`, current).length === 0) return false;
+        } else if (!el.value) return false;
+      }
+      return true;
+    }
+
+    btnPrev.addEventListener("click", ()=>{
+      if (index>0){ index--; show(index); }
+    });
+    btnNext.addEventListener("click", ()=>{
+      if (!validCurrent()){ alert("Please answer this question."); return; }
+      if (index<total-1){ index++; show(index); }
+    });
+
+    // keyboard: Enter = next, ArrowLeft/Right = prev/next
+    form.addEventListener("keydown",(e)=>{
+      if (e.key === "Enter"){
+        e.preventDefault();
+        (index === total-1 ? btnDone : btnNext).click();
+      }
+      if (e.key === "ArrowRight"){ e.preventDefault(); btnNext.click(); }
+      if (e.key === "ArrowLeft"){  e.preventDefault(); btnPrev.click(); }
+    });
+
+    form.onsubmit = (e)=>{
+      e.preventDefault();
+      if (!validCurrent()){ alert("Please answer this question."); return; }
+      const fd = new FormData(form);
+      const amountInput = $("#amount");
+      userProfile = {
+        risk: fd.get("risk"),
+        horizon: fd.get("horizon"),
+        styles: fd.getAll("styles"),
+        stance: fd.get("stance"),
+        amount: amountInput ? Number(amountInput.value) : 1000,
+        diversification: fd.get("diversification"),
+        preferSectors: fd.getAll("preferSectors")
+      };
+      recs = buildRecommendations(userProfile, IDEAS, 10);
+      navigate("deck"); renderDeck();
+    };
+
+    show(index);
+  }
+
+
+/* ---------- NAV / DECK CONTROLS ---------- */
+function wireNav(){
+  $$(".nav__link, [data-route]").forEach(b=>b.addEventListener("click",()=>{
+    const r=b.dataset.route; if(!r) return; if(r==="summary") renderSummary(); navigate(r);
+  }));
+  $("#year").textContent=new Date().getFullYear();
+}
+  function wireDeckControls(){
+    const approve=()=>{ 
+      const item=currentCard(); if(!item) return;
+      const id=item.dataset.id;
+      const idea=recs.find(x=>x.id===id);
+      approvals.push(idea);
+      updateDeckProgress();
+      item.classList.add('swipe-right');
+      setTimeout(()=>shiftCard(), 220);
+    };
+    const decline=()=>{ 
+      const item=currentCard(); if(!item) return;
+      const id=item.dataset.id;
+      const idea=recs.find(x=>x.id===id);
+      declines.push(idea);
+      updateDeckProgress();
+      item.classList.add('swipe-left');
+      setTimeout(()=>shiftCard(), 220);
+    };
+
+    $("#btn-approve").onclick=approve;
+    $("#btn-decline").onclick=decline;
+    document.addEventListener("keydown",(e)=>{
+      if(!$("#view-deck").classList.contains("view--active"))return;
+      if(e.key==="ArrowRight") approve();
+      if(e.key==="ArrowLeft")  decline();
+    });
+    $("#btn-reset").onclick=()=>{ userProfile=null; recs=[]; approvals=[]; declines=[]; navigate("quiz"); };
+  }
+
+
+/* ---------- BOOT ---------- */
+function boot(){ wireNav(); initQuiz(); populateExplore(); wireDeckControls(); }
+document.addEventListener("DOMContentLoaded", boot);
+
+  /* ---- On-scroll reveal ---- */
+  function initReveals(){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }
+
+  /* ---- Animate the numeric counters ---- */
+  function animateCounters(){
+    document.querySelectorAll('.stat-num').forEach(el=>{
+      const target = Number(el.dataset.count || 0);
+      let cur = 0;
+      const step = Math.max(1, Math.round(target/40));
+      const tick = ()=>{ cur = Math.min(target, cur + step); el.textContent = cur; if(cur < target) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    });
+  }
+
+  /* ---- Fill bars when the sections come into view ---- */
+  function fillWeights(){
+    document.querySelectorAll('#why-it-works .weight-row').forEach(row=>{
+      const pct = Number(row.dataset.w || 0);
+      const fill = row.querySelector('.weight-fill');
+      if (fill) fill.style.width = pct + '%';
+    });
+  }
+  function fillAlloc(){
+    document.querySelectorAll('#why-it-works .alloc-row').forEach(row=>{
+      const pct = Number(row.dataset.w || 0);
+      const fill = row.querySelector('.alloc-fill');
+      if (fill) fill.style.width = pct + '%';
+    });
+  }
+
+  /* ---- Kick everything off (YC-style polish, but lightweight) ---- */
+  function initWhySections(){
+    initReveals();
+
+    const purpose = document.getElementById('purpose');
+    const why = document.getElementById('why-it-works');
+
+    if (purpose){
+      const io1 = new IntersectionObserver(es=>{
+        es.forEach(e=>{ if(e.isIntersecting){ animateCounters(); io1.disconnect(); }});
+      }, {threshold:.3});
+      io1.observe(purpose);
+    }
+
+    if (why){
+      const io2 = new IntersectionObserver(es=>{
+        es.forEach(e=>{ if(e.isIntersecting){ fillWeights(); fillAlloc(); io2.disconnect(); }});
+      }, {threshold:.3});
+      io2.observe(why);
+    }
+  }
+
+  /* Call it after your existing boot runs */
+  document.addEventListener("DOMContentLoaded", initWhySections);
+
+
+</script>
 </body>
 </html>
+
 
 
