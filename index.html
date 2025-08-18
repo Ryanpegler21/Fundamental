@@ -194,7 +194,6 @@
     .opt{display:flex; align-items:center; gap:12px; cursor:pointer; padding:10px 12px; border-radius:12px; border:1px solid #e4eaf5; background:#fff}
     .opt--pill{justify-content:center}
     .opt input{appearance:none; width:18px; height:18px; border:2px solid var(--accent); border-radius:50%; display:inline-block; position:relative}
-    .opt input[type="checkbox"]{border-radius:6px}
     .opt input:checked{background:radial-gradient(circle at 50% 50%, var(--accent) 50%, transparent 52%)}
     .opt span{font-size:18px; color:#0f172a}
     .opt:hover{background:#f7f9ff}
@@ -359,14 +358,7 @@
       box-shadow:0 10px 24px rgba(37,99,235,.12);
       transform: translateY(-1px);
     }
-    .opt input{ display:none }           /* hide the tiny default input circle */
-    .opt span::before{                   /* custom bullet/check */
-      content:"";
-      display:inline-block; width:18px; height:18px; margin-right:10px;
-      border:2px solid #2563eb; border-radius:50%;
-      vertical-align:-3px;
-    }
-    .opt.is-selected span::before{ background:#2563eb; box-shadow:inset 0 0 0 3px #fff }
+
 
     /* --- Deck card: denser header & KPI icons style --- */
     .idea{ padding:20px 18px }
@@ -451,8 +443,143 @@
     .reveal{ opacity:0; transform:translateY(10px); transition:opacity .5s ease, transform .5s ease; }
     .reveal.on{ opacity:1; transform:translateY(0); }
 
-    
+    /* === Force checkboxes to look like circles in sector step === */
+    .opt input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--accent);
+      border-radius: 50%; /* makes it round */
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+    }
+    .opt input[type="checkbox"]:checked {
+      background: radial-gradient(circle at 50% 50%, var(--accent) 50%, transparent 52%);
+    }
 
+    /* Make both radios & checkboxes look like the same circular control */
+    .opt input[type="radio"],
+    .opt input[type="checkbox"]{
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+      flex: 0 0 18px;
+      vertical-align: middle;
+    }
+    .opt input[type="radio"]:checked,
+    .opt input[type="checkbox"]:checked{
+      background: radial-gradient(circle at 50% 50%, var(--accent) 50%, transparent 52%);
+    }
+
+    /* Keep the pill layout tidy */
+    .opt{ display:flex; align-items:center; gap:12px; }
+
+    /* Clean up the <summary> bar so it doesn’t look like a text field */
+    .sectors summary{
+      list-style:none;
+      -webkit-user-select:none;
+      user-select:none;
+      cursor:pointer;
+      margin-top:8px;
+      color:#31456e;
+      outline:none;
+      border:none;
+      padding:0;
+    }
+    .sectors summary::-webkit-details-marker{ display:none; }
+
+    /* Stop generic grey hover overriding special buttons */
+    .btn--approve:hover,
+    .btn--decline:hover {
+      background: inherit;   /* keep their own background */
+      filter: brightness(.97); /* tiny press feel */
+    }
+
+    /* Approve button hover: faint lighter green */
+    .btn--approve {
+      background: linear-gradient(180deg,#22c55e,#16a34a);
+      border-color:#149a45;
+      color:#fff;
+      font-weight:800;
+      box-shadow:0 12px 28px rgba(22,163,74,.25);
+    }
+
+    .btn--approve:hover {
+      background: linear-gradient(180deg,#34d35f,#22b14c); /* slightly lighter green */
+      border-color:#149a45;
+      color:#fff;
+      box-shadow:0 14px 32px rgba(22,163,74,.3);
+      filter:none; /* stop global grey filter */
+    }
+
+    /* Fix Approve hover turning white */
+    .btn--approve {
+      background: linear-gradient(180deg,#22c55e,#16a34a); /* default green */
+      border-color:#149a45;
+      color:#fff;
+      font-weight:800;
+      box-shadow:0 12px 28px rgba(22,163,74,.25);
+    }
+
+    .btn--approve:hover {
+      background: linear-gradient(180deg,#1fb454,#158a3d); /* slightly darker/lighter green, NOT white */
+      border-color:#128a3a;
+      color:#fff;
+      box-shadow:0 14px 32px rgba(22,163,74,.35);
+    }
+
+
+    /* =========================
+       SUMMARY PAGE POLISH
+       ========================= */
+
+    /* Headline styling */
+    #view-summary h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    #view-summary h2::after {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 4px;
+      margin-top: 8px;
+      border-radius: 2px;
+      background: linear-gradient(90deg,#2563eb,#1d4ed8);
+    }
+
+    /* Summary cards */
+    #summary-list .card {
+      background: linear-gradient(180deg,#ffffff,#f9fbff);
+      border:1px solid #e6ebf3;
+      border-radius: 16px;
+      box-shadow:0 8px 20px rgba(15,23,42,.06);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    #summary-list .card:hover {
+      transform: translateY(-2px);
+      box-shadow:0 12px 28px rgba(15,23,42,.1);
+    }
+
+    /* Match score pill */
+    .match-pill {
+      display:inline-block;
+      background:#eef5ff;
+      color:#2563eb;
+      font-weight:700;
+      padding:4px 10px;
+      bo
+
+    
   </style>
 
 </head>
@@ -506,7 +633,7 @@
             <div class="pulse-dot"></div>
             <h3>Our Approach</h3>
             <p class="muted">30-second quiz → swipe 10 ideas → transparent weights you can export.
-              No APIs, no hidden models — just clear inputs and deterministic rules.</p>
+              No hidden models — just clear inputs and deterministic rules.</p>
           </div>
 
           <div class="card purpose-card">
@@ -612,63 +739,6 @@
               Every card shows <b>“Why this matches you”</b> (style, risk, horizon, stance). Edit your quiz,
               re-swipe, and results update instantly.
             </p>
-            <div class="explain-demo">
-              <div class="explain-chip">Matches Growth & Quality</div>
-              <div class="explain-chip">Medium risk ↔ fit</div>
-              <div class="explain-chip">Long timeline fit</div>
-              <div class="explain-chip">Positive market backdrop</div>
-            </div>
-            <button class="btn btn--primary bounce-cta" data-route="quiz">Try It Now</button>
-          </div>
-        </div>
-      </div>
-
-
-
-        <div class="logic-grid">
-          <div class="card logic-card">
-            <h3>Deterministic Scoring</h3>
-            <p class="muted">No randomness. Same inputs → same outputs. You can change any input and instantly see how scores move.</p>
-            <div class="weights">
-              <div class="weight-row">
-                <span>Style Overlap</span><div class="weight-bar" data-w="35"></div><span class="w-num">35%</span>
-              </div>
-              <div class="weight-row">
-                <span>Risk Match</span><div class="weight-bar" data-w="20"></div><span class="w-num">20%</span>
-              </div>
-              <div class="weight-row">
-                <span>Horizon Fit</span><div class="weight-bar" data-w="20"></div><span class="w-num">20%</span>
-              </div>
-              <div class="weight-row">
-                <span>Stance ↔ Market</span><div class="weight-bar" data-w="20"></div><span class="w-num">20%</span>
-              </div>
-              <div class="weight-row">
-                <span>Base + Prefs</span><div class="weight-bar" data-w="5"></div><span class="w-num">5%</span>
-              </div>
-            </div>
-            <p class="tiny muted" style="margin-top:8px;">Sector preferences can add a small boost; diversification choice
-              adjusts picks to avoid over-clustering (or to lean in if you choose “Focused”).</p>
-          </div>
-
-          <div class="card logic-card">
-            <h3>From Score → Portfolio</h3>
-            <ol class="muted bullets logic-steps">
-              <li>Build top ideas by score, applying a diversification nudge.</li>
-              <li>Normalize scores into weights (sum to 100%).</li>
-              <li>Scale by your amount and export to CSV or text.</li>
-            </ol>
-            <div class="mini-alloc">
-              <div class="alloc-row"><span class="pill-code">AAPL</span><div class="alloc-bar" style="--w:38%"></div><span>38%</span></div>
-              <div class="alloc-row"><span class="pill-code">MSFT</span><div class="alloc-bar" style="--w:27%"></div><span>27%</span></div>
-              <div class="alloc-row"><span class="pill-code">VTI</span><div class="alloc-bar" style="--w:20%"></div><span>20%</span></div>
-              <div class="alloc-row"><span class="pill-code">BND</span><div class="alloc-bar" style="--w:15%"></div><span>15%</span></div>
-            </div>
-          </div>
-
-          <div class="card logic-card">
-            <h3>Explainability, Built-In</h3>
-            <p class="muted">Every card shows <b>“Why this matches you”</b> (style, risk, horizon, stance). Edit your quiz,
-              re-swipe, and the results update instantly. That’s transparency you can trust.</p>
             <div class="explain-demo">
               <div class="explain-chip">Matches Growth & Quality</div>
               <div class="explain-chip">Medium risk ↔ fit</div>
@@ -1047,7 +1117,10 @@ function renderSummary(){
   container.innerHTML=rows.map(x=>`
     <div class="card">
       <div class="row between"><h3>${x.name} <span class="badge">${x.id}</span></h3><span class="badge">${x.sector} • ${x.type.toUpperCase()}</span></div>
-      <p class="muted">Match: ${(x.score*100).toFixed(0)} • Suggested weight: ${(x.weightPct*100).toFixed(1)}% (${toCurrency(x.alloc.toFixed(0))})</p>
+      <p class="muted">
+        Match <span class="match-pill">${(x.score*100).toFixed(0)}</span> • 
+        Suggested weight: ${(x.weightPct*100).toFixed(1)}% (${toCurrency(x.alloc.toFixed(0))})
+      </p>
       <div class="tags">${x.style_tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
     </div>`).join("");
   $("#btn-export").onclick=()=>exportCSV(rows);
@@ -1072,24 +1145,43 @@ function copySummary(rows){
 }
 
 /* ---------- EXPLORE ---------- */
-function populateExplore(){
-  const sectors=[...new Set(IDEAS.map(x=>x.sector))].sort();
-  const sel=$("#sector-filter"); sectors.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;sel.appendChild(o);});
-  const sectorBox=$("#sector-checkboxes");
-  ALL_SECTORS.forEach(s=>{ const lbl=document.createElement("label"); lbl.className="pill"; lbl.innerHTML=`<input type="checkbox" name="preferSectors" value="${s}"> ${s}`; sectorBox.appendChild(lbl);});
-  function draw(){
-    const term=$("#search").value.toLowerCase(); const sec=sel.value;
-    const filtered=IDEAS.filter(x=>{
-      const t=x.name.toLowerCase().includes(term)||(x.id||"").toLowerCase().includes(term);
-      return t && (!sec || x.sector===sec);
+  /* ---------- EXPLORE ---------- */
+  function populateExplore(){
+    // fill sector <select> for the Explore table
+    const sectors = [...new Set(IDEAS.map(x => x.sector))].sort();
+    const sel = $("#sector-filter");
+    sectors.forEach(s => {
+      const o = document.createElement("option");
+      o.value = s;
+      o.textContent = s;
+      sel.appendChild(o);
     });
-    $("#explore-tbody").innerHTML=filtered.map(x=>`
-      <tr><td>${x.name}</td><td>${x.id||""}</td><td>${x.type.toUpperCase()}</td><td>${x.sector}</td><td>${x.style_tags.join(", ")}</td><td>${(x.focus||[]).slice(0,2).join(" • ")}</td></tr>
-    `).join("");
-  }
-  $("#search").oninput=draw; sel.onchange=draw; draw();
-}
 
+    function draw(){
+      const term = $("#search").value.toLowerCase();
+      const sec  = sel.value;
+      const filtered = IDEAS.filter(x => {
+        const t = x.name.toLowerCase().includes(term) || (x.id || "").toLowerCase().includes(term);
+        return t && (!sec || x.sector === sec);
+      });
+      $("#explore-tbody").innerHTML = filtered.map(x => `
+        <tr>
+          <td>${x.name}</td>
+          <td>${x.id || ""}</td>
+          <td>${x.type.toUpperCase()}</td>
+          <td>${x.sector}</td>
+          <td>${x.style_tags.join(", ")}</td>
+          <td>${(x.focus || []).slice(0,2).join(" • ")}</td>
+        </tr>
+      `).join("");
+    }
+
+    $("#search").oninput = draw;
+    sel.onchange = draw;
+    draw();
+  }
+
+  
 /* ---------- QUIZ ---------- */
   function initQuiz(){
     const form   = $("#quiz-form");
@@ -1106,15 +1198,29 @@ function populateExplore(){
 
     // sector checkboxes
     const sectorBox = $("#sector-checkboxes");
-    if (sectorBox && !sectorBox.children.length) {
-      const sectors = Array.from(new Set(IDEAS.map(x=>x.sector))).concat(["Bonds","Commodities"]);
-      sectors.forEach(s=>{
-        const lbl=document.createElement("label");
-        lbl.className="opt opt--pill";
-        lbl.innerHTML=`<input type="checkbox" name="preferSectors" value="${s}"><span>${s}</span>`;
+    if (sectorBox) {
+      // Always rebuild cleanly to avoid dupes / stale nodes
+      sectorBox.replaceChildren();
+
+      const sectors = [...new Set(IDEAS.map(x => x.sector)), "Bonds", "Commodities", "Multi"];
+
+      sectors.forEach(s => {
+        const lbl = document.createElement("label");
+        lbl.className = "opt opt--pill";
+
+        const inp = document.createElement("input");
+        inp.type = "checkbox";                  // <— force multi-select
+        inp.name = "preferSectors";             // FormData will use getAll()
+        inp.value = s;
+
+        const txt = document.createElement("span");
+        txt.textContent = s;
+
+        lbl.append(inp, txt);
         sectorBox.appendChild(lbl);
       });
     }
+
 
     // amount display
     const range=$("#amount"), out=$("#amount-val");
